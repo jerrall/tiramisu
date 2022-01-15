@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "type": "shell",
+        "label": "clean",
+        "command": "npm run hardhat:clean",
+        "presentation": {
+          "echo": false,
+          "reveal": "never",
+          "showReuseMessage": false,
+        }
+      },
+      {
+        "type": "shell",
+        "label": "compile",
+        "command": "npm run hardhat:compile",
+        "presentation": {
+          "reveal": "never",
+          "showReuseMessage": false,
+        }
+      },
+      {
+        "type": "shell",
+        "label": "test",
+        "command": "npm run hardhat:test",
+        "presentation": {
+          "echo": true,
+          "showReuseMessage": false,
+          "clear": true
+        }
+      },
+      {
+        "type": "shell",
+        "label": "node",
+        "command": "npm run hardhat:node",
+        "presentation": {
+          "reveal": "never",
+          "showReuseMessage": false,
+          "clear": true
+        }
+      }
+    ]
+  }
