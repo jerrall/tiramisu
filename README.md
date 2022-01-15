@@ -17,14 +17,14 @@ git clone https://github.com/jerrall/tiramisu.git
 - Windows: https://github.com/coreybutler/nvm-windows
 
 ### Install node
-We are using node v14 for this project
+We are using node v16 for this project
 
 If you want to install the standalone version of node, download [here](https://nodejs.org/en/download/)
 
 If you want to use nvm
 ```bash
-nvm install 14
-nvm use 14
+nvm install 16
+nvm use 16
 ```
 
 ### Install node modules
