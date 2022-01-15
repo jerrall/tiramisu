@@ -1,4 +1,6 @@
-# Basic Sample Hardhat Project
+# Tiramisu Savings Club
+
+(This is a starter for the Tirasimu Savings Club project. Initial code taken from Nader Dabit's tutorial - see below for URL)
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
 
