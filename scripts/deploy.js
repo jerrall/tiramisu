@@ -18,20 +18,9 @@ const hre = require("hardhat");
   return greeter.address;
 }
 
- async function deployGm() {
-  const Gm = await hre.ethers.getContractFactory("gm");
-  const gm = await Gm.deploy();
-
-  await gm.deployed();
-  return gm.address;
-}
-
 async function main() {
   const greeterAddress = await deployGreeter("Hello, Hardhat!");
   console.log("Greeter deployed to:", greeterAddress);
-
-  const gmAddress = await deployGm();
-  console.log("gm deployed to:", gmAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
