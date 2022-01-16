@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import Greeter from './artifacts/contracts/Greeter.sol/Greeter.json'
 
 // Update with the contract address logged out to the CLI when it was deployed 
-const greeterAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6";
+const greeterAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 
 function App() {
   // store greeting in local state
@@ -45,11 +45,9 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
         <button onClick={fetchGreeting}>Fetch Greeting</button>
         <button onClick={setGreeting}>Set Greeting</button>
         <input onChange={e => setGreetingValue(e.target.value)} placeholder="Set greeting" />
-      </header>
     </div>
   );
 }
