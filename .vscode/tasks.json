@@ -8,7 +8,7 @@
         "presentation": {
           "echo": false,
           "reveal": "never",
-          "showReuseMessage": false,
+          "showReuseMessage": false
         }
       },
       {
@@ -17,7 +17,7 @@
         "command": "npm run hardhat:compile",
         "presentation": {
           "reveal": "never",
-          "showReuseMessage": false,
+          "showReuseMessage": false
         }
       },
       {
@@ -32,13 +32,33 @@
       },
       {
         "type": "shell",
-        "label": "node",
+        "label": "hardhat node",
         "command": "npm run hardhat:node",
         "presentation": {
           "reveal": "never",
           "showReuseMessage": false,
           "clear": true
         }
+      },
+      {
+        "type": "shell",
+        "label": "react devserver",
+        "command": "npm start",
+        "presentation": {
+          "reveal": "never",
+          "showReuseMessage": false,
+          "clear": true
+        },
+        "problemMatcher": []
+      },
+      {
+        "type": "shell",
+        "label": "deploy (localhost)",
+        "command": "npm run hardhat:deploy:local",
+        "presentation": {
+          "showReuseMessage": false
+        },
+        "problemMatcher": []
       }
     ]
   }

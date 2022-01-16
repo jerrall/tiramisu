@@ -5,21 +5,33 @@
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
 
-async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
+/**
+ * Deploy the example Greeter smart contract 
+ * @param {string} message initial greeting
+ * @returns {string} contract address
+ */
+ async function deployGreeter(message) {
   const Greeter = await hre.ethers.getContractFactory("Greeter");
   const greeter = await Greeter.deploy("Hello, Hardhat!");
 
   await greeter.deployed();
+  return greeter.address;
+}
 
-  console.log("Greeter deployed to:", greeter.address);
+ async function deployGm() {
+  const Gm = await hre.ethers.getContractFactory("gm");
+  const gm = await Gm.deploy();
+
+  await gm.deployed();
+  return gm.address;
+}
+
+async function main() {
+  const greeterAddress = await deployGreeter("Hello, Hardhat!");
+  console.log("Greeter deployed to:", greeterAddress);
+
+  const gmAddress = await deployGm();
+  console.log("gm deployed to:", gmAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
