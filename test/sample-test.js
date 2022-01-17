@@ -2,26 +2,10 @@ const { expect, use } = require("chai");
 const { describe, test } = require("mocha");
 const { ethers } = require("hardhat");
 const chaiAsPromised = require("chai-as-promised");
+const { getAccounts } = require("../utils");
 
 // augment missing functionality in chai, helpful for dealing with async operations
 use(chaiAsPromised);
-
-/**
- * Fetch the first accountCount accounts from hardhat
- * 
- * WARNING:
- *  - These accounts are deterministically the same for all users
- *  - Private keys are publicly available, and not safe
- *  - Useful for testing only
- *  - Go here for more information: https://hardhat.org/getting-started/#running-tasks
- * @param {number} accountCount 
- * @returns {any[]} list of addresses
- */
- async function getAccounts(accountCount) {
-  const accounts = await ethers.getSigners();
-  return accounts
-    .slice(0, accountCount);
-}
 
 describe("Tiramisu savings club", () => {
   const NUM_TEST_ACCOUNTS = 10;
@@ -42,7 +26,7 @@ describe("Tiramisu savings club", () => {
 
   // `beforeEach` will run before each test, re-deploying the contract every time
   beforeEach(async () => {
-    const factory = await ethers.getContractFactory("TiramisuExperiment");
+    const factory = await ethers.getContractFactory("TiramisuFactoryStrategy");
     contract = await factory.deploy(addresses);
   
     await contract.deployed();
