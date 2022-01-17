@@ -1,5 +1,4 @@
 import './App.css';
-import { NoWalletFound } from './NoWalletFound';
 import { useState } from 'react';
 import { ethers } from 'ethers'
 import Greeter from './artifacts/contracts/Greeter.sol/Greeter.json'
@@ -10,11 +9,6 @@ const greeterAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 function App() {
   // store greeting in local state
   const [greeting, setGreetingValue] = useState()
-
-  if (typeof window.ethereum === 'undefined') {
-    return <NoWalletFound />;
-  }
-
 
   // request access to the user's MetaMask account
   async function requestAccount() {
