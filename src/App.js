@@ -43,8 +43,8 @@ function App() {
     }
   }
 
-  return (
-    <div className="App">
+  return (   
+    <div className="App">        
         <button onClick={fetchGreeting}>Fetch Greeting</button>
         <button onClick={setGreeting}>Set Greeting</button>
         <input onChange={e => setGreetingValue(e.target.value)} placeholder="Set greeting" />
