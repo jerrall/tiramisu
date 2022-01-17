@@ -4,6 +4,11 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
 contract Tiramisu {
+    /**
+    address ==> Group[]
+    groups: uint[]
+    
+     */
     constructor() {
 
     }
@@ -14,6 +19,11 @@ contract Tiramisu {
 
     function contribute() public {
         // A user can contribute money to a group, thereby becoming a contributor to that group
+
+        /**
+        - which group are we contributing to?
+        - how much are we contributing?
+         */
     }
 
     function request() public {

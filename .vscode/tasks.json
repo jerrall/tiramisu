@@ -18,7 +18,8 @@
         "presentation": {
           "reveal": "never",
           "showReuseMessage": false
-        }
+        },
+        "problemMatcher": []
       },
       {
         "type": "shell",
