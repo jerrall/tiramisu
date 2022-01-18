@@ -62,6 +62,14 @@ describe("Tiramisu savings club", () => {
 
     // Confirm that nextPayee cycled back to 0 at the end (modulo behavior)
     expect(await contract.nextPayee()).to.equal(0);
+
+    // Assuming everyone acted honestly, the difference between deposits and withdrawals for EACH user should be 0
+    // b/c a savings club has no expectation of profits
+    for (let account of accounts) {
+      const totalDeposits = await contract.deposits(account.address);
+      const totalWithdrawals = await contract.withdrawals(account.address);
+      expect(totalDeposits - totalWithdrawals).to.equal(0);
+    }
   });
 
   test("One user fails to deposit, payee fails to withdraw owed amount", async () => {

@@ -43,7 +43,7 @@ contract TiramisuFactoryStrategy {
             - For each address:
                 - Owed balance = sum of all deposits - sum of all withdrawals (calculated from mappings in storage)
                 - If owed balance = 0, this address is settled
-                - If owed balance < 0, this address actually owes the protocol $ and is a liability to other users
+                - If owed balance < 0, this address actually owes the protocol $ and is currently a liability to other users
                 - If owed balance > 0, the protocol owes this user
             Allocate remaining funds to addresses where owed balance > 0, weighted by how much is owed to them
 
