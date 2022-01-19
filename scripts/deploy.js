@@ -4,27 +4,23 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 const { ethers } = require("hardhat");
-const { getAccounts } = require("../utils");
 
 /**
  * Deploy the example Greeter smart contract 
  * @param {string[]} memberAddresses addresses of the members of the group (sorted by payout order)
  * @returns {string} contract address
  */
- async function deployTiramisuExperiment(memberAddresses) {
+ async function deployTiramisuSavingsClub() {
   const TiramisuSavingsGroup = await ethers.getContractFactory("TiramisuSavingsClub");
-  const tiramisuSavingsGroup = await TiramisuSavingsGroup.deploy(memberAddresses);
+  const tiramisuSavingsGroup = await TiramisuSavingsGroup.deploy();
 
   await tiramisuSavingsGroup.deployed();
   return tiramisuSavingsGroup.address;
 }
 
 async function main() {
-  const accounts = await getAccounts(10);
-  const addresses = accounts.map(account => account.address);
-  console.log('Deploying savings group contract with the following addresses as group members', addresses);
-  const tiramisuExperimentAddress = await deployTiramisuExperiment(addresses);
-  console.log("Savings group contract deployed to:", tiramisuExperimentAddress);
+  const contractAddress = await deployTiramisuSavingsClub();
+  console.log("Savings group contract deployed to:", contractAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
