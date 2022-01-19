@@ -12,7 +12,7 @@ const { getAccounts } = require("../utils");
  * @returns {string} contract address
  */
  async function deployTiramisuExperiment(memberAddresses) {
-  const TiramisuSavingsGroup = await ethers.getContractFactory("TiramisuFactoryStrategy");
+  const TiramisuSavingsGroup = await ethers.getContractFactory("TiramisuSavingsClub");
   const tiramisuSavingsGroup = await TiramisuSavingsGroup.deploy(memberAddresses);
 
   await tiramisuSavingsGroup.deployed();

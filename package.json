@@ -22,7 +22,8 @@
     "hardhat:node": "hardhat node",
     "hardhat:accounts": "hardhat accounts",
     "hardhat:help": "hardhat help",
-    "hardhat:deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "hardhat:deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "check": "npm run hardhat:clean && npm run hardhat:compile && npm run hardhat:test"
   },
   "eslintConfig": {
     "extends": [

@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-contract TiramisuFactoryStrategy {
+contract TiramisuSavingsClub {
     // List of group member addresses, sorted by payout order
     address[] public members;
 

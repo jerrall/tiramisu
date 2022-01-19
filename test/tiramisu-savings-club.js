@@ -26,7 +26,7 @@ describe("Tiramisu savings club", () => {
 
   // `beforeEach` will run before each test, re-deploying the contract every time
   beforeEach(async () => {
-    const factory = await ethers.getContractFactory("TiramisuFactoryStrategy");
+    const factory = await ethers.getContractFactory("TiramisuSavingsClub");
     contract = await factory.deploy(addresses);
   
     await contract.deployed();
