@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 
-/// @title Tiramisue Savings Club v1
+/// @title Tiramisu Savings Club v1
 /// @author Jerrall, Luis, Mayuko, Prashant
 /// @notice This dapp has a single smart contract architecture. It manages state for all savings clubs in this single contract
 /// @notice v1 was developed during a short period of time (DappCamp) with the goal of being a MVP. See whitepaper for future roadmap ideas
