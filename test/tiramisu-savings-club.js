@@ -11,7 +11,7 @@ describe("Tiramisu savings club", () => {
   const NUM_TEST_ACCOUNTS = 10;
   let accounts; // list of NUM_TEST_ACCOUNTS accounts
   let addresses; // list of NUM_TEST_ACCOUNTS addresses
-  let names;
+  let names; // Placeholder for human readable names, using UPPERCASE of address for now
 
   let contract; // deployed contract object
 
@@ -35,9 +35,28 @@ describe("Tiramisu savings club", () => {
     await contract.deployed();
   });
 
-  test("All accounts deposit and first account fails to overdraft the account", async () => {
-    await contract.connect(accounts[0]).createGroup(addresses, names, 0); 
-    expect(await contract.getName(addresses[0])).to.equal(addresses[0].toUpperCase());
+  /**
+   * Helper that sequentially deposits the same amount using all accounts
+   * @param {number} amount (wei)
+   */
+   const allAccountsDeposit = async (amount) => {
+    // Each account deposits same amount of wei
+    for (let i = 0; i < accounts.length; i++) {
+      await contract.connect(accounts[i]).deposit(1, { value: amount });
+    }
+  }
+
+  test("Create a savings club", async () => {
+    await contract.createGroup(addresses, names, 0); 
+
+    const depositAmount = 100;
+    await allAccountsDeposit(depositAmount);
+
+    expect(await contract.getBalance(1)).to.equal(depositAmount * addresses.length);
+
+    await contract.withdraw(1, depositAmount * addresses.length);
+
+    expect(await contract.getBalance(1)).to.equal(0);
   });
 
 

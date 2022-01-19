@@ -43,7 +43,8 @@ contract TiramisuSavingsClub {
     /// @param _members List of addresses that are members of this goup, sorted by payout order
     /// @param _names List of human readable names that map to addresses - indexed to _members
     /// @param _ownerIndex Index of the address and name of the owner who is allowed to perform special admin functions
-    function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public {
+    /// @return group id
+    function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public returns (uint) {
         require(_members.length > 0, "Cannot create an empty group");
         require(_members.length == _names.length, "_members and _names length should match");
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
@@ -59,19 +60,19 @@ contract TiramisuSavingsClub {
             groupsToMembers[_groupId] = _members;
             memberNames[_memberAddress] = _memberName;
         }
+        return _groupId;
     }
 
     /// Deposit a payment into a savings group
     /// @param _groupId The index of the group you want to deposit into
-    /// @param _amount The amount of ether you want to deposit (wei)
     /// @dev Reverts if _groupId is not valid
     /// @dev Reverts if _amount is not positive
     /// @dev Reverts if msg.sender does not belong to this group
-    function deposit(uint _groupId, uint _amount) validGroupId(_groupId) public payable {
-        require(_amount > 0, "Deposit amount must be greater than zero");
+    function deposit(uint _groupId) validGroupId(_groupId) public payable {
+        require(msg.value > 0, "Deposit amount must be greater than zero");
         require(addressBelongs(msg.sender, _groupId), "Address does not belong ");
-        groupBalances[_groupId] += _amount; // Increment group balance
-        deposits[_groupId][msg.sender] += _amount; // Increment contributions by this address
+        groupBalances[_groupId] += msg.value; // Increment group balance
+        deposits[_groupId][msg.sender] += msg.value; // Increment contributions by this address
     }
 
     /// Withdraw funds from a savings group
