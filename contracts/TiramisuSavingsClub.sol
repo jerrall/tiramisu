@@ -2,61 +2,50 @@
 pragma solidity ^0.8.0;
 
 contract TiramisuSavingsClub {
-    // List of group member addresses, sorted by payout order
-    address[] public members;
+    struct Group {
+        address[] members;
+        string[] names;
+        uint owner;
+    }
+
+    Group[] public groups;
+
+    mapping(address => uint) public global_memberToGroup; //keeps track of which group each user is in
+    mapping(uint => address[]) public groupsToMembers; //keeps track of which users are in each group
+    mapping(address => string) public memberNames; //store names of users.
 
     // Index of next member to receive a payout, incremented by 1 after each payout (cycling back to 0)
     // members[nextPayee] is the only address that can withdraw
-    uint public nextPayee = 0;
+    mapping(uint => uint) public nextPayee; //keep track of who's the next payee in each group. 
+    mapping(uint => uint) public groupBalances; //stores the amount of money each group has
+    
+    mapping(uint => mapping(address => uint)) deposits;
+    mapping(uint => mapping(address => uint)) withdrawals;
 
-    mapping(address => uint) public deposits;
-    mapping(address => uint) public withdrawals;
+    function createGroup(address[] memory _members, string[] memory _names, uint _owner) public {
+        require(_members.length > 0, "Cannot create an empty group");
+        require(_members.length == _names.length, "_members and _names length should match");
+        require(_owner >= 0 && _owner < _members.length, "_owner index invalid");
 
+        uint id = groups.length;
+        groups.push(Group(_members, _names, _owner));
 
-    constructor(address[] memory _members) {
-        members = _members;
+        for (uint i = 0; i < _members.length; i++) {
+            address memberAddress = _members[i];
+            string memory memberName = _names[i];
+
+            global_memberToGroup[memberAddress] = id;
+            groupsToMembers[id] = _members;
+            memberNames[memberAddress] = memberName;
+        }
+    }
+
+    function getName(address user) public view returns (string memory) {
+        return memberNames[user];
     }
 
     function getBalance() public view returns (uint) {
         return address(this).balance;
-    }
-
-    // Members call this function to "pay their dues"
-    function deposit() public payable {
-        deposits[msg.sender] += msg.value;
-    }
-
-    // Requestors call this function to withdraw their payout, when it is their turn
-    function withdraw(uint _amount) public {
-        require(_amount <= getBalance(), "Cannot withdraw more than the current balance");
-        require(msg.sender == members[nextPayee], "Caller is not the next payee");
-        (bool sent, ) = payable(msg.sender).call{value: _amount}("");
-        require(sent, "Failed to send Ether");
-
-        withdrawals[msg.sender] +=_amount;
-        nextPayee = (nextPayee + 1) % members.length; // cycle through addresses, starting back at index 0 when we reach the end of the list
-    }
-
-    function dissolve() public {
-        /**
-            - The group owner can dissolve the group
-            - For each address:
-                - Owed balance = sum of all deposits - sum of all withdrawals (calculated from mappings in storage)
-                - If owed balance = 0, this address is settled
-                - If owed balance < 0, this address actually owes the protocol $ and is currently a liability to other users
-                - If owed balance > 0, the protocol owes this user
-            Allocate remaining funds to addresses where owed balance > 0, weighted by how much is owed to them
-
-            This formula works because a savings group is in theory a closed system, with no expectation of profit
-            Ideally, the amount of $ you deposited, is the exact same amount you should get back at the end
-            If that's not true, then something went wrong.
-         */
-    }
-
-    function resetGroupMembers(address[] memory _newMembers) public {
-        // only owner should be able to call this
-        // useful if a member leaves/defaults, or if a new member is added
-        members = _newMembers;
     }
 
 }
