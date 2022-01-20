@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 /// @title Tiramisu Savings Club v1
 /// @author Jerrall, Luis, Mayuko, Prashant
@@ -9,6 +10,9 @@ pragma solidity ^0.8.0;
 /// @dev Contraint #1: A user (address) can only belong to a single group
 /// @dev Contraint #2: Only one pending request for money can exist at a time per group
 contract TiramisuSavingsClub {
+    using Counters for Counters.Counter;
+    Counters.Counter private _groupIdCounter;
+
     // Store a list of group ids (the indices of this array) and the group owner address (the value at that index)
     address[] public groupOwners;
 
@@ -28,15 +32,7 @@ contract TiramisuSavingsClub {
         // Otherwise our mapping lookups will be error prone (can't distinguish default value from the group at index 0)
         // First real group will be at index 1
         groupOwners.push(address(0));
-    }
-
-    /// Ensure that the group id is valid
-    /// @param _groupId The index of the group
-    /// @dev Reverts the transaction if the id is invalid
-    /// @dev Group at index 0 is not valid
-    modifier validGroupId(uint _groupId) {
-        require(_groupId >= 0 && _groupId < groupOwners.length, "Inalid group id");
-        _;
+        _groupIdCounter.increment();
     }
 
     /// Create a savings group
@@ -49,8 +45,9 @@ contract TiramisuSavingsClub {
         require(_members.length == _names.length, "_members and _names length should match");
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
-        uint _groupId = groupOwners.length; // future id of this group
+        uint _groupId = _groupIdCounter.current(); // future id of this group
         groupOwners.push(_members[_ownerIndex]);
+        _groupIdCounter.increment();
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
@@ -61,6 +58,9 @@ contract TiramisuSavingsClub {
             groupsToMembers[_groupId] = _members;
             memberNames[_memberAddress] = _memberName;
         }
+
+        assert(groupOwners.length == _groupIdCounter.current());
+        
         return _groupId;
     }
 
@@ -146,7 +146,7 @@ contract TiramisuSavingsClub {
    /// Get the current balance for a particular group
    /// @param _groupId group id
    /// @return current balance
-    function getBalance(uint _groupId) public view validGroupId(_groupId) returns (uint) {
+    function getBalance(uint _groupId) public view returns (uint) {
         return groupBalances[_groupId];
     }
 
