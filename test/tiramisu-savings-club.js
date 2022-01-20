@@ -42,7 +42,7 @@ describe("Tiramisu savings club", () => {
    const allAccountsDeposit = async (amount) => {
     // Each account deposits same amount of wei
     for (let i = 0; i < accounts.length; i++) {
-      await contract.connect(accounts[i]).deposit(1, { value: amount });
+      await contract.connect(accounts[i]).deposit({ value: amount });
     }
   }
 
@@ -54,7 +54,7 @@ describe("Tiramisu savings club", () => {
 
     expect(await contract.getBalance(1)).to.equal(depositAmount * addresses.length);
 
-    await contract.withdraw(1, depositAmount * addresses.length);
+    await contract.withdraw(depositAmount * addresses.length);
 
     expect(await contract.getBalance(1)).to.equal(0);
   });

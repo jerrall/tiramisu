@@ -64,29 +64,27 @@ contract TiramisuSavingsClub {
     }
 
     /// Deposit a payment into a savings group
-    /// @param _groupId The index of the group you want to deposit into
     /// @dev Reverts if _groupId is not valid
     /// @dev Reverts if _amount is not positive
     /// @dev Reverts if msg.sender does not belong to this group
-    function deposit(uint _groupId) validGroupId(_groupId) public payable {
+    function deposit() public payable {
+        uint _groupId = memberToGroupId[msg.sender];
         require(msg.value > 0, "Deposit amount must be greater than zero");
-        require(addressBelongs(msg.sender, _groupId), "Address does not belong ");
         groupBalances[_groupId] += msg.value; // Increment group balance
         deposits[_groupId][msg.sender] += msg.value; // Increment contributions by this address
     }
 
     /// Withdraw funds from a savings group
     /// @notice Only the next payee is allowed to withdraw at any point in time. Transaction will fail if it's not your turn
-    /// @param _groupId The index of the group you want to deposit into
     /// @param _amount The amount of ether you want to withdraw (wei)
     /// @dev Reverts if _groupId is not valid
     /// @dev Reverts if you attempt to withdraw more than your saving group balance
     /// @dev Reverts if _amount is not positive
     /// @dev Reverts if msg.sender does not belong to this group
     /// @dev Reverts if the caller is not the next payee (not your turn)
-    function withdraw(uint _groupId, uint _amount) validGroupId(_groupId) public {
+    function withdraw(uint _amount) public {
+        uint _groupId = memberToGroupId[msg.sender];
         require(_amount <= getBalance(_groupId), "Cannot withdraw more than the current balance");
-        require(addressBelongs(msg.sender, _groupId), "Address does not belong ");
         require(getNextPayee(_groupId) == msg.sender, "Caller is not the next payee");
         (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
         require(_sent, "Failed to send Ether");
@@ -99,10 +97,10 @@ contract TiramisuSavingsClub {
     /// Dissolve savings group and return funds
     /// @notice Delete state from your savings club, and disburse remaining funds
     /// @notice WARNING - disburse funds functionality not implemented yet 
-    /// @param _groupId The index of the group you want to deposit into
     /// @dev Reverts if _groupId is not valid
     /// @dev Reverts if caller is not the group owner
-    function dissolve(uint _groupId) validGroupId(_groupId) public {
+    function dissolve() public {
+        uint _groupId = memberToGroupId[msg.sender];
         require(msg.sender == groupOwners[_groupId], "Caller is not the group owner");
 
         // TODO: Need to implement the functionality to disburse the remaining funds fairly
@@ -123,21 +121,6 @@ contract TiramisuSavingsClub {
         delete nextPayeeIndex[_groupId];
         delete groupBalances[_groupId];
  
-    }
-
-    /// Ensure that the address actually belongs to a group
-    /// @param _address The address to verify
-    /// @param _groupId The group id to check address membership against
-    /// @return whether or not the address belongs to this particular group
-    /// @dev Loops through all addresses in that group to ensure this address is included
-    function addressBelongs(address _address, uint _groupId) private view returns (bool) {
-        address[] storage _groupMembers = groupsToMembers[_groupId];
-        for (uint i = 0; i < _groupMembers.length; i++) {
-            if (_groupMembers[i] == _address) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /// Get the group id that this address belongs to
