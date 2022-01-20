@@ -23,13 +23,13 @@ contract TiramisuSavingsClub {
 
     Group[] public groups;
 
-    mapping(address => uint) public memberToGroupId; // keeps track of which group each user is in
-    mapping(address => uint) deposits; // Deposits per address
-    mapping(address => uint) withdrawals; // Withdrawals per address
+    mapping(address => uint) public memberToGroupId;
+    mapping(address => uint) deposits;
+    mapping(address => uint) withdrawals;
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
-        // Otherwise our mapping lookups will be error prone (can't distinguish default value from the group at index 0)
+        // Otherwise our mapping lookups will be error prone due to Solidity limitations (can't distinguish default value from the group at index 0)
         // First real group will be at index 1
         Group memory burnedGroup;
         groups.push(burnedGroup);
@@ -72,7 +72,7 @@ contract TiramisuSavingsClub {
         Group storage _group = groups[_groupId];
         
         _group.balance += msg.value;
-        deposits[msg.sender] += msg.value; // Increment contributions by this address
+        deposits[msg.sender] += msg.value;
     }
 
     /// Withdraw funds from a savings group
@@ -92,7 +92,7 @@ contract TiramisuSavingsClub {
         require(_sent, "Failed to send Ether");
 
         _group.balance -= _amount;
-        withdrawals[msg.sender] += _amount; // Increment withdrawals by this address
+        withdrawals[msg.sender] += _amount;
 
         // cycle through addresses, starting back at index 0 when we reach the end of the list
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
@@ -130,24 +130,13 @@ contract TiramisuSavingsClub {
         return groups[_id];
     }
 
-
-    /// Get the group id for a given address
-    /// @notice Get the group id for a given address
-    /// @param _address The address for which you want to fetch a corresponding group id
-    /// @dev Reverts if the address does not belong to a group
-    /// @return group id
-    function getGroupId(address _address) private view returns (uint) {
-        uint _groupId = memberToGroupId[_address];
-        require(_groupId > 0, "Caller is not a member of a group");
-        return _groupId;
-    }
-
-
     /// Get the group id for the calling address
     /// @notice Get the group id for the calling address
     /// @dev Reverts if the address does not belong to a group
     /// @return group id
     function getGroupId() private view returns (uint) {
-        return getGroupId(msg.sender);
+        uint _groupId = memberToGroupId[msg.sender];
+        require(_groupId > 0, "Caller is not a member of a group");
+        return _groupId;
     }
 }
