@@ -13,25 +13,26 @@ contract TiramisuSavingsClub {
     using Counters for Counters.Counter;
     Counters.Counter private _groupIdCounter;
 
-    // Store a list of group ids (the indices of this array) and the group owner address (the value at that index)
-    address[] public groupOwners;
+    struct Group {
+        address[] members;
+        string[] memberNames;
+        uint ownerIndex;
+        uint balance;
+        uint nextPayee;
+    }
+
+    Group[] public groups;
 
     mapping(address => uint) public memberToGroupId; // keeps track of which group each user is in
-    mapping(uint => address[]) public groupsToMembers; // keeps track of which users are in each group
-    mapping(address => string) public memberNames; // store names of users.
-
-    // Index of next member to eligible receive a payout, incremented by 1 after each payout (cycling back to 0)
-    mapping(uint => uint) public nextPayeeIndex;
-    mapping(uint => uint) public groupBalances; // stores the balance of each group
-    
-    mapping(address => uint) deposits; // Deposits per address, per group
-    mapping(address => uint) withdrawals; // Withdrawals per address, per group
+    mapping(address => uint) deposits; // Deposits per address
+    mapping(address => uint) withdrawals; // Withdrawals per address
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
         // Otherwise our mapping lookups will be error prone (can't distinguish default value from the group at index 0)
         // First real group will be at index 1
-        groupOwners.push(address(0));
+        Group memory burnedGroup;
+        groups.push(burnedGroup);
         _groupIdCounter.increment();
     }
 
@@ -39,6 +40,8 @@ contract TiramisuSavingsClub {
     /// @param _members List of addresses that are members of this goup, sorted by payout order
     /// @param _names List of human readable names that map to addresses - indexed to _members
     /// @param _ownerIndex Index of the address and name of the owner who is allowed to perform special admin functions
+    /// @dev Reverts if any of the inputs are invalid
+    /// @dev Reverts if any of the member addresses currently belong to another group (not allowed)
     /// @return group id
     function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public returns (uint) {
         require(_members.length > 0, "Cannot create an empty group");
@@ -46,115 +49,105 @@ contract TiramisuSavingsClub {
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
         uint _groupId = _groupIdCounter.current(); // future id of this group
-        groupOwners.push(_members[_ownerIndex]);
+        groups.push(Group(_members, _names, _ownerIndex, 0, 0));
         _groupIdCounter.increment();
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
             require(memberToGroupId[_memberAddress] == 0, "Failed to create a group, because an address already belongs to a group");
-            string memory _memberName = _names[i];
-
             memberToGroupId[_memberAddress] = _groupId;
-            groupsToMembers[_groupId] = _members;
-            memberNames[_memberAddress] = _memberName;
         }
 
-        assert(groupOwners.length == _groupIdCounter.current());
+        assert(groups.length == _groupIdCounter.current());
         
         return _groupId;
     }
 
     /// Deposit a payment into a savings group
-    /// @dev Reverts if _groupId is not valid
     /// @dev Reverts if _amount is not positive
-    /// @dev Reverts if msg.sender does not belong to this group
+    /// @dev Reverts if caller is not a member of a group
     function deposit() public payable {
-        uint _groupId = memberToGroupId[msg.sender];
         require(msg.value > 0, "Deposit amount must be greater than zero");
-        groupBalances[_groupId] += msg.value; // Increment group balance
+        uint _groupId = getGroupId();
+        Group storage _group = groups[_groupId];
+        
+        _group.balance += msg.value;
         deposits[msg.sender] += msg.value; // Increment contributions by this address
     }
 
     /// Withdraw funds from a savings group
     /// @notice Only the next payee is allowed to withdraw at any point in time. Transaction will fail if it's not your turn
     /// @param _amount The amount of ether you want to withdraw (wei)
-    /// @dev Reverts if _groupId is not valid
-    /// @dev Reverts if you attempt to withdraw more than your saving group balance
     /// @dev Reverts if _amount is not positive
-    /// @dev Reverts if msg.sender does not belong to this group
+    /// @dev Reverts if caller is not a member of a group
+    /// @dev Reverts if you attempt to withdraw more than your saving group balance
     /// @dev Reverts if the caller is not the next payee (not your turn)
     function withdraw(uint _amount) public {
-        uint _groupId = memberToGroupId[msg.sender];
-        require(_amount <= getBalance(_groupId), "Cannot withdraw more than the current balance");
-        require(getNextPayee(_groupId) == msg.sender, "Caller is not the next payee");
+        require(_amount > 0, "Withdrawal amount must be positive");
+        uint _groupId = getGroupId();
+        Group storage _group = groups[_groupId];
+        require(_amount <= _group.balance, "Cannot withdraw more than the current balance");
+        require(_group.members[_group.nextPayee] == msg.sender, "Caller is not the next payee");
         (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
         require(_sent, "Failed to send Ether");
 
-        groupBalances[_groupId] -= _amount; // Decrement group balance
-        withdrawals[msg.sender] +=_amount; // Increment withdrawals by this address
-        nextPayeeIndex[_groupId] = (nextPayeeIndex[_groupId] + 1) % groupsToMembers[_groupId].length; // cycle through addresses, starting back at index 0 when we reach the end of the list
+        _group.balance -= _amount;
+        withdrawals[msg.sender] += _amount; // Increment withdrawals by this address
+
+        // cycle through addresses, starting back at index 0 when we reach the end of the list
+        _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
     }
 
     /// Dissolve savings group and return funds
     /// @notice Delete state from your savings club, and disburse remaining funds
+    /// @notice Delete wipes the state of the group, but does not remove it from the list. That group id cannot be reused
     /// @notice WARNING - disburse funds functionality not implemented yet 
-    /// @dev Reverts if _groupId is not valid
+    /// @dev Reverts if caller is not a member of a group
     /// @dev Reverts if caller is not the group owner
     function dissolve() public {
-        uint _groupId = memberToGroupId[msg.sender];
-        require(msg.sender == groupOwners[_groupId], "Caller is not the group owner");
+        uint _groupId = getGroupId();
+        Group storage _group = groups[_groupId];
+        require(msg.sender == _group.members[_group.ownerIndex], "Caller is not the group owner");
 
         // TODO: Need to implement the functionality to disburse the remaining funds fairly
 
-        address[] storage _members = groupsToMembers[_groupId];
-        for (uint i = 0; i < _members.length; i++) {
-            address _memberAddress = _members[i];
+        for (uint i = 0; i < _group.members.length; i++) {
+            address _memberAddress = _group.members[i];
 
             delete memberToGroupId[_memberAddress];
-            delete memberNames[_memberAddress];
-
             delete deposits[_memberAddress];
             delete withdrawals[_memberAddress];
         }
 
-        delete groupOwners[_groupId];
-        delete groupsToMembers[_groupId];
-        delete nextPayeeIndex[_groupId];
-        delete groupBalances[_groupId];
- 
+        delete groups[_groupId];
     }
 
-    /// Get the group id that this address belongs to
-    /// @param _address The address for whom we want to fetch groupId
-    /// @return the id of the group that this address belongs
-    /// @dev If this address does not belong to a group, the transaction is reverted
-    /// @dev If this address belongs to a non-existing group, the transaction is reverted
+    /// Get the group at a given id
+    /// @notice Get the group at a given id
+    /// @param _id The id for which you want to fetch a corresponding group
+    /// @return group id
+    function getGroup(uint _id) public view returns (Group memory) {
+        return groups[_id];
+    }
+
+
+    /// Get the group id for a given address
+    /// @notice Get the group id for a given address
+    /// @param _address The address for which you want to fetch a corresponding group id
+    /// @dev Reverts if the address does not belong to a group
+    /// @return group id
     function getGroupId(address _address) private view returns (uint) {
         uint _groupId = memberToGroupId[_address];
-        require(_groupId > 0, "Address does not belong to any group"); // index 0 is special and known garbage (see constructor)
-        require(_groupId < groupOwners.length, "Invalid group id");
+        require(_groupId > 0, "Caller is not a member of a group");
         return _groupId;
     }
 
-    /// Get the human readable name of an address
-    /// @param _address member address
-    /// @return human readable name
-    function getName(address _address) public view returns (string memory) {
-        return memberNames[_address];
-    }
 
-   /// Get the current balance for a particular group
-   /// @param _groupId group id
-   /// @return current balance
-    function getBalance(uint _groupId) public view returns (uint) {
-        return groupBalances[_groupId];
-    }
-
-    /// Get the index of the next payee for a particular group
-    /// @param _groupId group id
-    /// @return index of the next payee (address currently eligible to call withdraw())
-    function getNextPayee(uint _groupId) public view returns (address) {
-        uint _nextPayeeIndex = nextPayeeIndex[_groupId];
-        return groupsToMembers[_groupId][_nextPayeeIndex];
+    /// Get the group id for the calling address
+    /// @notice Get the group id for the calling address
+    /// @dev Reverts if the address does not belong to a group
+    /// @return group id
+    function getGroupId() private view returns (uint) {
+        return getGroupId(msg.sender);
     }
 }

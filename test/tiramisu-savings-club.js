@@ -2,7 +2,7 @@ const { expect, use } = require("chai");
 const { describe, test } = require("mocha");
 const { ethers } = require("hardhat");
 const chaiAsPromised = require("chai-as-promised");
-const { getAccounts } = require("../utils");
+const { getAccounts, toBase10 } = require("../utils");
 
 // augment missing functionality in chai, helpful for dealing with async operations
 use(chaiAsPromised);
@@ -46,18 +46,41 @@ describe("Tiramisu savings club", () => {
     }
   }
 
-  test("Create a savings club", async () => {
+  /**
+   * Fetch a group by id from the contract
+   * Converts the ethers.js group struct into a more friendly plain old JS object
+   * @param {number} groupId to fetch group at
+   * @returns JS friendly group object
+   */
+  const getGroup = async (groupId) => {
+    const group = await contract.getGroup(groupId); 
+    const [members, memberNames, ownerIndex, balance, nextPayee] = group;
+    return {
+      members,
+      memberNames,
+      ownerIndex: toBase10(ownerIndex['_hex']),
+      balance: toBase10(balance['_hex']),
+      nextPayee: toBase10(nextPayee['_hex'])
+    };
+  }
+
+  test("Basic create, deposit, withdraw, and dissolve", async () => {
     await contract.createGroup(addresses, names, 0); 
 
     const depositAmount = 100;
     await allAccountsDeposit(depositAmount);
 
-    expect(await contract.getBalance(1)).to.equal(depositAmount * addresses.length);
+    let group = await getGroup(1);
+    expect(group.members.length).to.equal(addresses.length);
+    expect(group.balance).to.equal(depositAmount * addresses.length);
 
     await contract.withdraw(depositAmount * addresses.length);
 
-    expect(await contract.getBalance(1)).to.equal(0);
+    group = await getGroup(1);
+    expect(group.balance).to.equal(0);
+
+    await contract.dissolve();
+    group = await getGroup(1);
+    expect(group.members.length).to.equal(0);
   });
-
-
 });

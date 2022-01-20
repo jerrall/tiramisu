@@ -17,6 +17,16 @@ const getAccounts = async (accountCount) => {
     .slice(0, accountCount);
 }
 
+/**
+ * Given a group, get the base 10 representation of the group balance
+ * @param {string} base16Number A string representing a base 16 number 
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+ * @returns base 10 number || NaN in case of invalid input
+ */
+const toBase10 = (base16Number) => parseInt(base16Number, 16)
+
+
 module.exports = {
-    getAccounts
+    getAccounts,
+    toBase10
 }
