@@ -20,8 +20,8 @@ contract TiramisuSavingsClub {
     mapping(uint => uint) public nextPayeeIndex;
     mapping(uint => uint) public groupBalances; // stores the balance of each group
     
-    mapping(uint => mapping(address => uint)) deposits; // Deposits per address, per group
-    mapping(uint => mapping(address => uint)) withdrawals; // Withdrawals per address, per group
+    mapping(address => uint) deposits; // Deposits per address, per group
+    mapping(address => uint) withdrawals; // Withdrawals per address, per group
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
@@ -54,6 +54,7 @@ contract TiramisuSavingsClub {
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
+            require(memberToGroupId[_memberAddress] == 0, "Failed to create a group, because an address already belongs to a group");
             string memory _memberName = _names[i];
 
             memberToGroupId[_memberAddress] = _groupId;
@@ -71,7 +72,7 @@ contract TiramisuSavingsClub {
         uint _groupId = memberToGroupId[msg.sender];
         require(msg.value > 0, "Deposit amount must be greater than zero");
         groupBalances[_groupId] += msg.value; // Increment group balance
-        deposits[_groupId][msg.sender] += msg.value; // Increment contributions by this address
+        deposits[msg.sender] += msg.value; // Increment contributions by this address
     }
 
     /// Withdraw funds from a savings group
@@ -90,7 +91,7 @@ contract TiramisuSavingsClub {
         require(_sent, "Failed to send Ether");
 
         groupBalances[_groupId] -= _amount; // Decrement group balance
-        withdrawals[_groupId][msg.sender] +=_amount; // Increment withdrawals by this address
+        withdrawals[msg.sender] +=_amount; // Increment withdrawals by this address
         nextPayeeIndex[_groupId] = (nextPayeeIndex[_groupId] + 1) % groupsToMembers[_groupId].length; // cycle through addresses, starting back at index 0 when we reach the end of the list
     }
 
@@ -112,8 +113,8 @@ contract TiramisuSavingsClub {
             delete memberToGroupId[_memberAddress];
             delete memberNames[_memberAddress];
 
-            delete deposits[_groupId][_memberAddress];
-            delete withdrawals[_groupId][_memberAddress];
+            delete deposits[_memberAddress];
+            delete withdrawals[_memberAddress];
         }
 
         delete groupOwners[_groupId];
