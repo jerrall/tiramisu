@@ -1,4 +1,4 @@
-const { ethers } = require("hardhat");
+import { ethers } from "hardhat";
 
 /**
  * Fetch the first accountCount accounts from hardhat
@@ -11,7 +11,7 @@ const { ethers } = require("hardhat");
  * @param {number} accountCount 
  * @returns {any[]} list of addresses
  */
-const getAccounts = async (accountCount) => {
+export const getAccounts = async (accountCount: number) => {
   const accounts = await ethers.getSigners();
   return accounts
     .slice(0, accountCount);
@@ -23,10 +23,4 @@ const getAccounts = async (accountCount) => {
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
  * @returns base 10 number || NaN in case of invalid input
  */
-const toBase10 = (base16Number) => parseInt(base16Number, 16)
-
-
-module.exports = {
-    getAccounts,
-    toBase10
-}
+export const toBase10 = (base16Number: string) => parseInt(base16Number, 16)
