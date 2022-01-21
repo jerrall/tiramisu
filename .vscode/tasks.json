@@ -16,9 +16,12 @@
         "label": "compile",
         "command": "npm run hardhat:compile",
         "presentation": {
-          "reveal": "never",
-          "showReuseMessage": false
-        }
+          "echo": true,
+          "showReuseMessage": false,
+          "clear": true
+        },
+        "problemMatcher": [],
+        "dependsOn": ["clean"]
       },
       {
         "type": "shell",

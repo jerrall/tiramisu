@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@openzeppelin/contracts": "^4.4.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -22,7 +23,8 @@
     "hardhat:node": "hardhat node",
     "hardhat:accounts": "hardhat accounts",
     "hardhat:help": "hardhat help",
-    "hardhat:deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "hardhat:deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "check": "npm run hardhat:clean && npm run hardhat:compile && npm run hardhat:test"
   },
   "eslintConfig": {
     "extends": [
@@ -46,6 +48,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.0.0",
     "hardhat": "^2.8.2"
