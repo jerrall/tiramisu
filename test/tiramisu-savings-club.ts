@@ -1,19 +1,21 @@
-const { expect, use } = require("chai");
-const { describe, test } = require("mocha");
-const { ethers } = require("hardhat");
-const chaiAsPromised = require("chai-as-promised");
-const { getAccounts, toBase10 } = require("../utils");
+import { expect, use } from "chai";
+import { describe, test } from "mocha";
+import { ethers } from "hardhat";
+import chaiAsPromised from "chai-as-promised";
+import { getAccounts, toBase10 } from "../utils";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { Contract } from "ethers";
 
 // augment missing functionality in chai, helpful for dealing with async operations
 use(chaiAsPromised);
 
 describe("Tiramisu savings club", () => {
   const NUM_TEST_ACCOUNTS = 10;
-  let accounts; // list of NUM_TEST_ACCOUNTS accounts
-  let addresses; // list of NUM_TEST_ACCOUNTS addresses
-  let names; // Placeholder for human readable names, using UPPERCASE of address for now
+  let accounts: SignerWithAddress[]; // list of NUM_TEST_ACCOUNTS accounts
+  let addresses: string[]; // list of NUM_TEST_ACCOUNTS addresses
+  let names: string[]; // Placeholder for human readable names, using UPPERCASE of address for now
 
-  let contract; // deployed contract object
+  let contract: Contract; // deployed contract object
 
   // runs once before the first test in this block
   // eslint-disable-next-line no-undef 
@@ -24,7 +26,7 @@ describe("Tiramisu savings club", () => {
     // Map this list of accounts to a list of addresses for convenience
     addresses = accounts.map(account => account.address);
 
-    names = addresses.map(address => address.toUpperCase());
+    names = addresses.map((address: string) => address.toUpperCase());
   });
 
   // `beforeEach` will run before each test, re-deploying the contract every time
@@ -39,7 +41,7 @@ describe("Tiramisu savings club", () => {
    * Helper that sequentially deposits the same amount using all accounts
    * @param {number} amount (wei)
    */
-   const allAccountsDeposit = async (amount) => {
+   const allAccountsDeposit = async (amount: number) => {
     // Each account deposits same amount of wei
     for (let i = 0; i < accounts.length; i++) {
       await contract.connect(accounts[i]).deposit({ value: amount });
@@ -52,7 +54,7 @@ describe("Tiramisu savings club", () => {
    * @param {number} groupId to fetch group at
    * @returns JS friendly group object
    */
-  const getGroup = async (groupId) => {
+  const getGroup = async (groupId: number) => {
     const group = await contract.getGroup(groupId); 
     const [members, memberNames, ownerIndex, balance, nextPayee] = group;
     return {
