@@ -3,34 +3,31 @@ import CreateGroup from './components/CreateGroup';
 import SearchGroup from './components/SearchGroup';
 import YourGroups from './components/YourGroups';
 import PendingRequests from './components/PendingRequests';
-import YourRequests from './components/YourRequests';
-import { getMyGroups, getPendingRequests, getMyRequests } from "./services/ethereumService";
+import { getMyGroup, registerCallbackForEvents } from "./services/ethereumService";
 
 class Main extends Component {
-  state = {   
-    groups: getMyGroups(),
-    pendingRequests: getPendingRequests(),
-    myRequests: getMyRequests()
-  };
+  state = { };
 
-  updateState(){
-    this.setState({
-      groups: getMyGroups(),
-      pendingRequests: getPendingRequests(),
-      myRequests: getMyRequests()
-    });
+  async componentDidMount() {
+    this.updateState();
+    registerCallbackForEvents(this.updateState);
   }
 
+  updateState = async () => { 
+    this.setState({
+      group: await getMyGroup(),     
+    }); 
+  };
+  
   render() {  
-    const { groups, pendingRequests, myRequests } = this.state;
+    const { group } = this.state;
     
     return (
       <React.Fragment>        
-        <CreateGroup />
-        <SearchGroup />
-        <YourGroups groups={ groups } />
-        <PendingRequests requests={ pendingRequests } />
-        <YourRequests requests={ myRequests } />
+        { group == null && <CreateGroup />}
+        { group == null && <SearchGroup />}
+        { group && <YourGroups group={group} /> }
+        { group && <PendingRequests group={group} /> }
       </React.Fragment>
     );
   }

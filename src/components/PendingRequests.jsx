@@ -1,27 +1,24 @@
 import React, { Component } from "react";
+import { approveRequest, denyRequest } from '../services/ethereumService';
 
 class PendingRequests extends Component {
-  state = {   
-  };
-
   render() {    
+    const { requests } = this.props;
+
     return (
       <React.Fragment>
         <h2>Pending Requests</h2>
-        <strong>Joe Smith - Group AAA</strong><br />
-        Amount: 0.1 ETH<br />
-        Reason: Emergency Medical Expense<br />
-        <button type="button">Approve</button>
-        <button type="button">Deny</button>
-        <br /><br />
-
-        <strong>John Doe - Group BBB</strong><br />
-        Amount: 0.01 ETH<br />
-        Reason: Emergency Home Expense<br />
-        <button type="button">Approve</button>
-        <button type="button">Deny</button>
-        <br /><br />
-
+          {requests && requests.map((request) => (
+              <React.Fragment>
+                <strong>{ request.requestorName } - { request.groupName }</strong><br />
+                Amount: { request.amount } ETH<br />
+                Reason: { request.reason } <br />
+                Date Requested: { request.dateRequested } <br />
+                <button type="button" onClick={ () => { approveRequest(request.id) } }>Approve</button>
+                <button type="button" onClick={ () => { denyRequest(request.id) }}>Deny</button>
+                <br /><br />
+              </React.Fragment>
+          ))}         
         <hr />
       </React.Fragment>
     );

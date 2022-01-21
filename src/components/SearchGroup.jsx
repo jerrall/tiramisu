@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { searchGroups, contributeAndJoin } from '../services/ethereumService';
+import { searchGroups, contributeAndJoinGroup } from '../services/ethereumService';
 
 class SearchGroup extends Component {
   state = {   
@@ -18,7 +18,7 @@ class SearchGroup extends Component {
 
   contributeAndJoin = async () => { 
     const { selectedGroup, nameText , amountText } = this.state;
-    await  contributeAndJoin( selectedGroup, nameText, amountText); 
+    await  contributeAndJoinGroup( selectedGroup, nameText, amountText); 
   };
 
   render() {    
