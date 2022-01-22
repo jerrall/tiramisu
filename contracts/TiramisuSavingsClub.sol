@@ -24,8 +24,8 @@ contract TiramisuSavingsClub {
     Group[] public groups;
 
     mapping(address => uint) public memberToGroupId;
-    mapping(address => uint) deposits;
-    mapping(address => uint) withdrawals;
+    mapping(address => uint) private deposits;
+    mapping(address => uint) private withdrawals;
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
@@ -44,8 +44,8 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if any of the member addresses currently belong to another group (not allowed)
     /// @return group id
     function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public returns (uint) {
-        require(_members.length > 0, "Cannot create an empty group");
-        require(_members.length == _names.length, "_members and _names length should match");
+        require(_members.length > 0, "Can't create empty group");
+        require(_members.length == _names.length, "_members/_names len should match");
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
         uint _groupId = _groupIdCounter.current(); // future id of this group
@@ -54,7 +54,7 @@ contract TiramisuSavingsClub {
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
-            require(memberToGroupId[_memberAddress] == 0, "Failed to create a group, because an address already belongs to a group");
+            require(memberToGroupId[_memberAddress] == 0, "Address already in a group");
             memberToGroupId[_memberAddress] = _groupId;
         }
 
@@ -67,7 +67,7 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if _amount is not positive
     /// @dev Reverts if caller is not a member of a group
     function deposit() public payable {
-        require(msg.value > 0, "Deposit amount must be greater than zero");
+        require(msg.value > 0, "Deposit must be > 0");
         uint _groupId = getGroupId();
         Group storage _group = groups[_groupId];
         
@@ -83,11 +83,13 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if you attempt to withdraw more than your saving group balance
     /// @dev Reverts if the caller is not the next payee (not your turn)
     function withdraw(uint _amount) public {
-        require(_amount > 0, "Withdrawal amount must be positive");
+        require(_amount > 0, "_amount must be > 0");
         uint _groupId = getGroupId();
         Group storage _group = groups[_groupId];
-        require(_amount <= _group.balance, "Cannot withdraw more than the current balance");
+        require(_amount <= _group.balance, "Can't withdraw > current balance");
         require(_group.members[_group.nextPayee] == msg.sender, "Caller is not the next payee");
+
+        // solhint-disable-next-line avoid-low-level-calls
         (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
         require(_sent, "Failed to send Ether");
 
@@ -136,7 +138,7 @@ contract TiramisuSavingsClub {
     /// @return group id
     function getGroupId() private view returns (uint) {
         uint _groupId = memberToGroupId[msg.sender];
-        require(_groupId > 0, "Caller is not a member of a group");
+        require(_groupId > 0, "Caller not member of a group");
         return _groupId;
     }
 }
