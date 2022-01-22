@@ -19,5 +19,4 @@ jobs:
           node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-      - run: npm run hardhat:compile
-      - run: npm run hardhat:test
+      - run: npm run check
