@@ -38,7 +38,24 @@ npm install
 ## Open Visual Studio Code
 
 Open this folder in Visual Studio Code
-If you get prompted to install the Solidity extension - do it :)
+If you get prompted to install extensions - do it :)
+
+## Configure environment variables
+
+How to get secrets
+- Etherscan API key:
+  - Sign in to etherscan.io
+  - Go to [etherscan.io/myapikey](https://etherscan.io/myapikey)
+  - Click on API-KEYS
+  - Click Add
+  - Copy API key into .env
+
+
+
+```bash
+cp ./example.env ./.env
+nano ./env # Update all the values in here with secrets
+```
 
 ## Running the project
 
@@ -55,6 +72,15 @@ npx hardhat help
 ```
 
 Aliases for the above tasks also exist in package.json npm scripts and Visual Studio code tasks (Command + Shift + P ==> Tasks)
+
+## Code review checklist
+
+Make sure this command passes before you open a pull request
+```bash
+npm run check
+```
+
+This will run all sorts of stuff that absolutely should pass to ensure a high quality of code
 
 Tutorial by Nader Dabit this was taken from:
 https://dev.to/dabit3/the-complete-guide-to-full-stack-ethereum-development-3j13
