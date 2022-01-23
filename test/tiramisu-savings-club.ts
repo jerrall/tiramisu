@@ -62,7 +62,7 @@ describe("Tiramisu savings club", () => {
      * @param {number} groupId to fetch group at
      * @returns JS friendly group object
      */
-    const getGroup = async (groupId: number) => {
+    const getGroup = async (groupId: number): Promise<Group> => {
         const group = await contract.getGroup(groupId);
         const [members, memberNames, ownerIndex, balance, nextPayee] = group;
         return {
