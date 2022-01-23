@@ -27,6 +27,9 @@ contract TiramisuSavingsClub {
     mapping(address => uint) private deposits;
     mapping(address => uint) private withdrawals;
 
+    event Deposit(address depositor, uint groupId, uint amount);
+    event Withdrawal(address payee, uint groupId, uint amount);
+
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
         // Otherwise our mapping lookups will be error prone due to Solidity limitations (can't distinguish default value from the group at index 0)
@@ -73,6 +76,7 @@ contract TiramisuSavingsClub {
         
         _group.balance += msg.value;
         deposits[msg.sender] += msg.value;
+        emit Deposit(msg.sender, _groupId, msg.value);
     }
 
     /// Withdraw funds from a savings group
@@ -98,6 +102,8 @@ contract TiramisuSavingsClub {
 
         // cycle through addresses, starting back at index 0 when we reach the end of the list
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
+
+        emit Withdrawal(msg.sender, _groupId, _amount);
     }
 
     /// Dissolve savings group and return funds
