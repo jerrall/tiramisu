@@ -28,7 +28,7 @@
     "hardhat:deploy:local": "TS_NODE_TRANSPILE_ONLY=1 TS_NODE_FILES=true hardhat run scripts/deploy.ts --network localhost",
     "hardhat:deploy:rinkeby": "TS_NODE_TRANSPILE_ONLY=1 TS_NODE_FILES=true hardhat run scripts/deploy.ts --network rinkeby",
     "hardhat:verify:rinkeby": "hardhat verify --network rinkeby <contract address goes here>",
-    "check": "tsc && npm run hardhat:clean && npm run hardhat:compile && npm run hardhat:test && npm run lint"
+    "check": "npm run hardhat:clean && npm run hardhat:compile && tsc && npm run hardhat:test && npm run lint"
   },
   "eslintConfig": {
     "extends": [

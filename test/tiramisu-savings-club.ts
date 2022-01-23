@@ -4,18 +4,11 @@ import { ethers } from "hardhat";
 import chaiAsPromised from "chai-as-promised";
 import { getAccounts, toBase10 } from "../utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { Contract } from "ethers";
+
+import { TiramisuSavingsClub } from "../typechain"
 
 // augment missing functionality in chai, helpful for dealing with async operations
 use(chaiAsPromised);
-
-interface Group {
-    members: string[],
-    memberNames: string[],
-    ownerIndex: number,
-    balance: number,
-    nextPayee: number
-}
 
 describe("Tiramisu savings club", () => {
     const NUM_TEST_ACCOUNTS = 10;
@@ -23,7 +16,7 @@ describe("Tiramisu savings club", () => {
     let addresses: string[]; // list of NUM_TEST_ACCOUNTS addresses
     let names: string[]; // Placeholder for human readable names, using UPPERCASE of address for now
 
-    let contract: Contract; // deployed contract object
+    let contract: TiramisuSavingsClub; // deployed contract object
 
     // runs once before the first test in this block
     before(async () => {
@@ -62,15 +55,13 @@ describe("Tiramisu savings club", () => {
      * @param {number} groupId to fetch group at
      * @returns JS friendly group object
      */
-    const getGroup = async (groupId: number): Promise<Group> => {
+    const getGroup = async (groupId: number) => {
         const group = await contract.getGroup(groupId);
-        const [members, memberNames, ownerIndex, balance, nextPayee] = group;
         return {
-            members,
-            memberNames,
-            ownerIndex: toBase10(ownerIndex['_hex']),
-            balance: toBase10(balance['_hex']),
-            nextPayee: toBase10(nextPayee['_hex'])
+            ...group,
+            ownerIndex: toBase10(group.ownerIndex),
+            balance: toBase10(group.balance),
+            nextPayee: toBase10(group.nextPayee)
         };
     }
 
