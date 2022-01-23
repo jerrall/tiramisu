@@ -93,15 +93,6 @@ describe("Tiramisu savings club", () => {
             ).to.be.revertedWith("_owner index invalid");
         });
 
-        // I propose we omit this test, because string comparisons in solidity require keccak hashes
-        // which cost 30 gas, and I think catching this can be the user's responsibility
-        // solidity is already strongly typed, so the transaction should fail to submit if typo in address
-        // it("should revert when address or name is empty", async function () {
-        //     await expect(
-        //         contract.connect(accounts[0]).createGroup(addresses, names, 0)
-        //     ).to.be.revertedWith("_address or _name has empty imput");
-        // });
-
         it("should revert when address already belongs to a group", async function () {
             await contract.createGroup(addresses, names, 0);
 
@@ -155,24 +146,6 @@ describe("Tiramisu savings club", () => {
             group = await getGroup(1);
             expect(group.members.length).to.equal(0);
           });
-          
-        // Deleting this test and replacing it with the equivalent one above
-        // The one above checks the event emissions which is equivalent to checking the private mapping of deposits/withdrawals
-        // it("should decrease message sender's deposit by message value when valid amount is provided", async function () {
-        //     await contract.createGroup(addresses, names, 0);
-
-        //     let originalDeposit = await contract.deposits(addresses[0]);
-        //     originalDeposit = originalDeposit.toNumber();
-
-        //     await contract
-        //         .connect(accounts[0])
-        //         .deposit({ value: 100 });
-
-        //     let laterBalance = await contract.deposits(addresses[0]);
-        //     laterBalance = laterBalance.toNumber();
-
-        //     expect(laterBalance).to.equal(100);
-        // });
     });
 
     describe("withdraw", function () {
@@ -213,24 +186,6 @@ describe("Tiramisu savings club", () => {
             let laterbalance = (await getGroup(1)).balance;
             expect(laterbalance).to.equal(originalbalance - 5000);
         });
-
-        // Deleting this test and replacing it with "Basic create, deposit, withdraw, and dissolve"
-        // That one checks the event emissions which is equivalent to checking the private mapping of deposits/withdrawals
-        // it("should increase message sender's withdrawal by message value when valid amount is provided", async function () {
-        //     await contract.createGroup(addresses, names, 0);
-        //     await contract.deposit({ value: 10000 });
-
-        //     let originalwithdrawal = await contract.withdrawals(addresses[0]);
-        //     originalwithdrawal = originalwithdrawal.toNumber();
-        //     await contract
-        //         .connect(accounts[0])
-        //         .withdraw({ value: 5000 });
-
-        //     let laterbalance = await contract.withdrawals(addresses[0]);
-        //     laterbalance = laterbalance.toNumber();
-
-        //     expect(laterbalance).to.equal(originalbalance + 5000);
-        // });
 
         it("should change the payee to the next member", async function () {
             await contract.createGroup(addresses, names, 0);
