@@ -136,14 +136,18 @@ describe("Tiramisu savings club", () => {
             await contract.createGroup(addresses, names, 0); 
         
             const depositAmount = 100;
-            await allAccountsDeposit(depositAmount);
-        
+            await expect(contract.connect(accounts[0]).deposit({ value: depositAmount * addresses.length }))
+                .to.emit(contract, "Deposit")
+                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+            
             let group = await getGroup(1);
             expect(group.members.length).to.equal(addresses.length);
             expect(group.balance).to.equal(depositAmount * addresses.length);
         
-            await contract.withdraw(depositAmount * addresses.length);
-        
+            await expect(contract.withdraw(depositAmount * addresses.length))
+                .to.emit(contract, "Withdrawal")
+                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+            
             group = await getGroup(1);
             expect(group.balance).to.equal(0);
         
@@ -152,19 +156,22 @@ describe("Tiramisu savings club", () => {
             expect(group.members.length).to.equal(0);
           });
           
+        // Deleting this test and replacing it with the equivalent one above
+        // The one above checks the event emissions which is equivalent to checking the private mapping of deposits/withdrawals
         // it("should decrease message sender's deposit by message value when valid amount is provided", async function () {
         //     await contract.createGroup(addresses, names, 0);
 
-        //     let originaldeposit = await contract.deposits(addresses[accounts[0]]);
-        //     originaldeposit = originaldeposit.toNumber();
+        //     let originalDeposit = await contract.deposits(addresses[0]);
+        //     originalDeposit = originalDeposit.toNumber();
+
         //     await contract
         //         .connect(accounts[0])
         //         .deposit({ value: 100 });
 
-        //     let laterbalance = await contract.deposits(addresses[accounts[0]]);
-        //     laterbalance = laterbalance.toNumber();
+        //     let laterBalance = await contract.deposits(addresses[0]);
+        //     laterBalance = laterBalance.toNumber();
 
-        //     expect(laterbalance).to.equal(originalbalance - 100);
+        //     expect(laterBalance).to.equal(100);
         // });
     });
 
@@ -207,6 +214,8 @@ describe("Tiramisu savings club", () => {
             expect(laterbalance).to.equal(originalbalance - 5000);
         });
 
+        // Deleting this test and replacing it with "Basic create, deposit, withdraw, and dissolve"
+        // That one checks the event emissions which is equivalent to checking the private mapping of deposits/withdrawals
         // it("should increase message sender's withdrawal by message value when valid amount is provided", async function () {
         //     await contract.createGroup(addresses, names, 0);
         //     await contract.deposit({ value: 10000 });
