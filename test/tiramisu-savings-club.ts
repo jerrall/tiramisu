@@ -69,13 +69,13 @@ describe("Tiramisu savings club", () => {
         it("should revert when creating an empty group", async function () {
             await expect(
                 contract.connect(accounts[0]).createGroup([], [], 0)
-            ).to.be.revertedWith("Can't create empty group");
+            ).to.be.revertedWith("Cannot create an empty group");
         });
 
         it("should revert when _members and _names length does not match", async function () {
             await expect(
                 contract.connect(accounts[0]).createGroup(addresses, names.slice(1), 0)
-            ).to.be.revertedWith("_members/_names len should match");
+            ).to.be.revertedWith("_members and _names length should match");
         });
 
         it("should revert when _owner index is invalid", async function () {
@@ -89,7 +89,7 @@ describe("Tiramisu savings club", () => {
 
             await expect(
                 contract.connect(accounts[1]).createGroup(addresses, names, 0)
-            ).to.be.revertedWith("Address already in a group");
+            ).to.be.revertedWith("Failed to create a group, because an address already belongs to a group");
         });
     });
 
@@ -97,7 +97,7 @@ describe("Tiramisu savings club", () => {
         it("should revert when deposit amount is not greater than zero", async function () {
             await expect(
                 contract.connect(accounts[0]).deposit({ value: 0 })
-            ).to.be.revertedWith("Deposit must be > 0");
+            ).to.be.revertedWith("Deposit amount must be greater than zero");
         });
 
         it("should increase group balance by message value when valid amount is provided", async function () {
@@ -119,7 +119,7 @@ describe("Tiramisu savings club", () => {
         
             const depositAmount = 100;
             await expect(contract.connect(accounts[0]).deposit({ value: depositAmount * addresses.length }))
-                .to.emit(contract, "Deposit")
+                .to.emit(contract, "DepositEvent")
                 .withArgs(addresses[0], 1, depositAmount * addresses.length);
             
             let group = await getGroup(1);
@@ -143,7 +143,7 @@ describe("Tiramisu savings club", () => {
         it("should revert when withdrawal amount is not positive", async function () {
             await expect(
                 contract.connect(accounts[0]).withdraw(0)
-            ).to.be.revertedWith("_amount must be > 0");
+            ).to.be.revertedWith("Withdrawal amount must be positive");
         });
 
         it("should revert when withdrawal amount is greater than group's balance", async function () {
@@ -152,7 +152,7 @@ describe("Tiramisu savings club", () => {
 
             await expect(
                 contract.connect(accounts[0]).withdraw(11000)
-            ).to.be.revertedWith("Can't withdraw > current balance");
+            ).to.be.revertedWith("Cannot withdraw more than the current balance");
         });
 
         it("should revert when caller is not the next payee", async function () {
