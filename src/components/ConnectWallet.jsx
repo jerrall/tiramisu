@@ -1,3 +1,4 @@
+import "./styles.css";
 import React, { Component } from "react";
 import { isMetaMaskInstalled, attemptWalletConnect } from "../services/ethereumService";
 
@@ -17,9 +18,8 @@ class ConnectWallet extends Component {
     return (
       
       <React.Fragment>
-        <h1>Tiramisu Savings Club</h1>         
         { !metaMaskInstalled && <strong>MetaMask is not installed on your browser. Please visit <a href="https://metamask.io/" without rel="noreferrer" target="_blank">metamask.io</a> to download and install MetaMask.</strong>}
-        {metaMaskInstalled && !connectingToWallet && <button onClick={ this.handleConnectWalletButton }>Connect to MetaMask Wallet</button>}
+        {metaMaskInstalled && !connectingToWallet && <button class="btn btn-primary btn-xl" onClick={ this.handleConnectWalletButton }>Connect to MetaMask Wallet</button>}
         { connectingToWallet && <strong>Connecting To Wallet...</strong> }        
       </React.Fragment>
     );

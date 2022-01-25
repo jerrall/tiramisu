@@ -34,7 +34,7 @@ class Main extends Component {
     const { isWalletConnected, isMemberOfGroup, isGroupOwner, isMyTurn, groupBalance, whosTurnIsIt, myName, currentWalletAddress } = this.state;
     
     return (
-      <div style={{ textAlign: 'center' }}>        
+      <div style={{ textAlign: 'center', fontSize: '20px' }}>        
         { !isWalletConnected && <ConnectWallet /> }        
         { isWalletConnected && !isMemberOfGroup && <CreateGroup currentWalletAddress={currentWalletAddress}/> }       
         { isWalletConnected && isMemberOfGroup && 

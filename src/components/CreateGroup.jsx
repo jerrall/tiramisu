@@ -1,3 +1,4 @@
+import "./styles.css";
 import React, { Component } from "react";
 import { createGroup } from "../services/ethereumService";
 
@@ -46,37 +47,44 @@ class CreateGroup extends Component {
     
     return (
       <React.Fragment>
-        <h2>Create New Group</h2>    
-        You Are Not Yet A Member of a Group<br />
-        Create One Here (Up To 4 Members Including the Group Owner)<br /><br />
 
-        Group Owner<br />
-        Name: <input type="text" onChange={ (e) => this.handleNameChange(0, e) } /><br />
-        Address: <input type="text" onChange={ (e) => this.handleAddressChange(0, e) } disabled value={ currentWalletAddress }/><br /> 
-        Position: <select name="ownerIndex" id="ownerIndex" onChange={ this.handlePositionChange} >
-                      <option value="0">1</option>
-                      <option value="1">2</option>
-                      <option value="2">3</option>
-                      <option value="3">4</option>
-                </select>
-        <br /><br />
+        <div className="ui-section-divider"><strong>
+          <p>You Are Not Yet a Member of a Group</p>
+          <p>Create One Here (Up To 4 Members Including the Group Owner)</p>
+        </strong></div>
 
-        Member 1<br />
-        Name: <input type="text" onChange={ (e) => this.handleNameChange(1, e) } /><br />
-        Address: <input type="text" onChange={ (e) => this.handleAddressChange(1, e)  } /><br /> 
-        <br /><br />
 
-        Member 2<br />
-        Name: <input type="text" onChange={ (e) => this.handleNameChange(2, e) } /><br />
-        Address: <input type="text" onChange={ (e) => this.handleAddressChange(2, e)  } /><br /> 
-        <br /><br />
+        <div className="ui-section-divider">
+          <p><strong>Group Owner</strong></p>
+          <p><span class="new-group-field-name">Name:</span> <input type="text" onChange={ (e) => this.handleNameChange(0, e) } /></p>
+          <p><span class="new-group-field-name">Address:</span> <input type="text" onChange={ (e) => this.handleAddressChange(0, e) } disabled value={ currentWalletAddress }/></p>
+          <p>Position: <select name="ownerIndex" id="ownerIndex" onChange={ this.handlePositionChange} >
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                        <option value="3">4</option>
+                  </select></p>
+        </div>
 
-        Member 3<br />
-        Name: <input type="text" onChange={ (e) => this.handleNameChange(3, e) } /><br />
-        Address: <input type="text" onChange={ (e) => this.handleAddressChange(3, e)  } /><br /> 
-        <br /><br />
+        <div className="ui-section-divider">
+          <p><strong>Member 1</strong></p>
+          <p><span className="new-group-field-name">Name:</span> <input type="text" onChange={ (e) => this.handleNameChange(1, e) } /></p>
+          <p><span className="new-group-field-name">Address:</span> <input type="text" onChange={ (e) => this.handleAddressChange(1, e)  } /></p> 
+        </div>
+
+        <div className="ui-section-divider">
+          <p><strong>Member 2</strong></p>
+          <p><span className="new-group-field-name">Name:</span> <input type="text" onChange={ (e) => this.handleNameChange(2, e) } /></p>
+          <p><span className="new-group-field-name">Address:</span> <input type="text" onChange={ (e) => this.handleAddressChange(2, e)  } /></p> 
+        </div>
+
+        <div className="ui-section-divider">
+          <p><strong>Member 3</strong></p>
+          <p><span className="new-group-field-name">Name:</span> <input type="text" onChange={ (e) => this.handleNameChange(3, e) } /></p>
+          <p><span className="new-group-field-name">Address:</span> <input type="text" onChange={ (e) => this.handleAddressChange(3, e)  } /></p> 
+        </div>        
        
-        <button type="button" onClick={ this.handleCreateButton }>Create New Group</button>        
+        <button type="button" className="btn btn-primary btn-lg" onClick={ this.handleCreateButton }>Create New Group</button>        
       </React.Fragment>
     );
   }
