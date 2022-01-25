@@ -118,11 +118,13 @@ describe("Tiramisu savings club", () => {
             await contract.createGroup(addresses, names, 0); 
         
             const depositAmount = 100;
+            let group = await getGroup(1);
+
             await expect(contract.connect(accounts[0]).deposit({ value: depositAmount * addresses.length }))
                 .to.emit(contract, "DepositEvent")
-                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+                .withArgs(1, depositAmount * addresses.length, addresses[0],  addresses[0].toUpperCase(), group.balance);
             
-            let group = await getGroup(1);
+           
             expect(group.members.length).to.equal(addresses.length);
             expect(group.balance).to.equal(depositAmount * addresses.length);
         
