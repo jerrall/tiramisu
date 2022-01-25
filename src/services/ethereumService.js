@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { showToastMsg } from './toastService';
 import TiramisuSavingsClub from '../artifacts/contracts/TiramisuSavingsClub.sol/TiramisuSavingsClub.json'
 const TiramisuAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const consoleLoggingEnabled = true;
@@ -187,6 +188,7 @@ function handleNewGroupEvent(addresses, names, ownerIndex){
         "Addresses:", addresses,
         "Names:", names, 
         "Owner Index:", ownerIndex);
+    showToastMsg(names[ownerIndex] + " Started a New Group!");
     if(callback) callback();
 }
 
@@ -202,6 +204,8 @@ function handleDepositEvent(groupId, amount, sender, senderName, newGroupBalance
         "Sender Name:", senderName,
         "New Group Balance:", groupBalanceInEth);
 
+    showToastMsg(senderName + " Deposited " + amountInEth + " ETH");  
+    showToastMsg("Group Balance is Now: " + groupBalanceInEth + " ETH");       
     if(callback) callback();
 }
 
@@ -217,6 +221,8 @@ function handleWithdrawEvent(groupId, amount, recipient, recipientName, newGroup
         "Recipient Name:", recipientName,
         "New Group Balance:", groupBalanceInEth);
 
+    showToastMsg(recipientName + " Withdrew " + amountInEth + " ETH");  
+    showToastMsg("Group Balance is Now: " + groupBalanceInEth + " ETH");     
     if(callback) callback();
 }
 
@@ -225,6 +231,8 @@ function handleDissolveEvent(groupId, owner, ownerName){
         "Group ID:", groupId.toString(),
         "Owner:", owner,
         "Owner Name:", ownerName);
+
+    showToastMsg(ownerName + " Dissolved his/her Group"); 
     if(callback) callback();
 }
 
