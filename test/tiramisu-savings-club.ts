@@ -127,8 +127,8 @@ describe("Tiramisu savings club", () => {
             expect(group.balance).to.equal(depositAmount * addresses.length);
         
             await expect(contract.withdraw(depositAmount * addresses.length))
-                .to.emit(contract, "Withdrawal")
-                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+                .to.emit(contract, "WithdrawalEvent")
+                .withArgs(1, depositAmount * addresses.length, addresses[0], addresses[0].toUpperCase(), 0);
             
             group = await getGroup(1);
             expect(group.balance).to.equal(0);
