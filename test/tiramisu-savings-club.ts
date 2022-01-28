@@ -119,7 +119,7 @@ describe("Tiramisu savings club", () => {
         
             const depositAmount = 100;
             await expect(contract.connect(accounts[0]).deposit({ value: depositAmount * addresses.length }))
-                .to.emit(contract, "DepositEvent")
+                .to.emit(contract, "Deposit")
                 .withArgs(1, depositAmount * addresses.length, addresses[0],  addresses[0].toUpperCase(), depositAmount * addresses.length);
             
             let group = await getGroup(1);
@@ -127,7 +127,7 @@ describe("Tiramisu savings club", () => {
             expect(group.balance).to.equal(depositAmount * addresses.length);
         
             await expect(contract.withdraw(depositAmount * addresses.length))
-                .to.emit(contract, "WithdrawEvent")
+                .to.emit(contract, "Withdraw")
                 .withArgs(1, depositAmount * addresses.length, addresses[0], addresses[0].toUpperCase(), 0);
             
             group = await getGroup(1);

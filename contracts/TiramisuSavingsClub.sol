@@ -24,14 +24,14 @@ contract TiramisuSavingsClub {
     Group[] public groups;
 
     mapping(address => uint) public memberToGroupId;
-    mapping(address => uint) deposits;
-    mapping(address => uint) withdrawals;
-    mapping(address => string) memberNames;
+    mapping(address => uint) public deposits;
+    mapping(address => uint) public withdrawals;
+    mapping(address => string) public memberNames;
 
-    event NewGroupEvent(address[] addresses, string[] names, uint ownerIndex);
-    event DepositEvent(uint groupId, uint amount, address sender, string senderName, uint newGroupBalance);
-    event WithdrawEvent(uint groupId, uint amount, address recipient, string recipientName, uint newGroupBalance);
-    event DissolveEvent(uint groupId, address owner, string ownerName);
+    event NewGroup(address[] addresses, string[] names, uint ownerIndex);
+    event Deposit(uint groupId, uint amount, address sender, string senderName, uint newGroupBalance);
+    event Withdraw(uint groupId, uint amount, address recipient, string recipientName, uint newGroupBalance);
+    event Dissolve(uint groupId, address owner, string ownerName);
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
@@ -39,7 +39,7 @@ contract TiramisuSavingsClub {
         // First real group will be at index 1
         Group memory burnedGroup;
         groups.push(burnedGroup);
-        _groupIdCounter.increment();       
+        _groupIdCounter.increment();
     }
 
     /// Create a savings group
@@ -51,7 +51,7 @@ contract TiramisuSavingsClub {
     /// @return group id
     function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public returns (uint) {
         require(_members.length > 0, "Cannot create an empty group");
-        require(_members.length == _names.length, "_members and _names length should match");
+        require(_members.length == _names.length, "_members/_names len should match");
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
         uint _groupId = _groupIdCounter.current(); // future id of this group
@@ -60,13 +60,13 @@ contract TiramisuSavingsClub {
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
-            require(memberToGroupId[_memberAddress] == 0, "Failed to create a group, because an address already belongs to a group");
+            require(memberToGroupId[_memberAddress] == 0, "Address already in a group");
             memberToGroupId[_memberAddress] = _groupId;
             memberNames[_memberAddress] = _names[i];
         }
 
         assert(groups.length == _groupIdCounter.current());
-        emit NewGroupEvent(_members, _names, _ownerIndex);
+        emit NewGroup(_members, _names, _ownerIndex);
         return _groupId;
     }
 
@@ -74,13 +74,13 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if _amount is not positive
     /// @dev Reverts if caller is not a member of a group
     function deposit() public payable {
-        require(msg.value > 0, "Deposit amount must be greater than zero");
+        require(msg.value > 0, "Deposit must be > 0");
         uint _groupId = getGroupId();
         Group storage _group = groups[_groupId];
         
         _group.balance += msg.value;
         deposits[msg.sender] += msg.value;
-        emit DepositEvent(_groupId, msg.value, msg.sender, memberNames[msg.sender], _group.balance);
+        emit Deposit(_groupId, msg.value, msg.sender, memberNames[msg.sender], _group.balance);
     }
 
     /// Withdraw funds from a savings group
@@ -91,20 +91,28 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if you attempt to withdraw more than your saving group balance
     /// @dev Reverts if the caller is not the next payee (not your turn)
     function withdraw(uint _amount) public {
-        require(_amount > 0, "Withdrawal amount must be positive");
+        require(_amount > 0, "_amount must be > 0");
         uint _groupId = getGroupId();
         Group storage _group = groups[_groupId];
-        require(_amount <= _group.balance, "Cannot withdraw more than the current balance");
+        require(_amount <= _group.balance, "Can't withdraw > current balance");
         require(_group.members[_group.nextPayee] == msg.sender, "Caller is not the next payee");
-        (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
-        require(_sent, "Failed to send Ether");
-
+        
         _group.balance -= _amount;
         withdrawals[msg.sender] += _amount;
-
         // cycle through addresses, starting back at index 0 when we reach the end of the list
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
-        emit WithdrawEvent(_groupId, _amount, msg.sender, memberNames[msg.sender], _group.balance);
+
+        (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
+        if(!_sent) {
+            _group.balance += _amount;
+            withdrawals[msg.sender] -= _amount;
+            _group.nextPayee--;
+            if(_group.nextPayee < 0) _group.nextPayee = (_group.members.length - 1);
+        }
+        require(_sent, "Failed to send Ether");
+
+
+        emit Withdraw(_groupId, _amount, msg.sender, memberNames[msg.sender], _group.balance);
     }
 
     /// Dissolve savings group and return funds
@@ -131,7 +139,7 @@ contract TiramisuSavingsClub {
         }
 
         delete groups[_groupId];
-        emit DissolveEvent(_groupId, msg.sender, _ownerName);
+        emit Dissolve(_groupId, msg.sender, _ownerName);
     }
 
     /// Get the group at a given id
@@ -148,7 +156,7 @@ contract TiramisuSavingsClub {
     /// @return group id
     function getGroupId() private view returns (uint) {
         uint _groupId = memberToGroupId[msg.sender];
-        require(_groupId > 0, "Caller is not a member of a group");
+        require(_groupId > 0, "Caller not member of a group");
         return _groupId;
     }
     

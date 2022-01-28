@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { showToastMsg } from './toastService';
 import TiramisuSavingsClub from '../artifacts/contracts/TiramisuSavingsClub.sol/TiramisuSavingsClub.json'
-const TiramisuAddress = '0xFD60a545a2161895Fe1CDF6bf2B83988dC071318';
+const TiramisuAddress = '0xe9355C642ABa3f17CE4dA98A45E09d1a3110Eca9';
 const consoleLoggingEnabled = true;
 
 /**************************************** METAMASK WALLET CALLS *************************************************/
@@ -15,19 +15,18 @@ let callback;
 
 export function isMetaMaskInstalled(){    
     const { ethereum } = window;
-    return Boolean(ethereum && ethereum.isMetaMask);
+    return (ethereum && ethereum.isMetaMask);
 }
 
 export function isWalletConnected(){
-    if(currentWallet === null || currentWallet === undefined) return false;
-    return true;
+    return !!currentWallet;    
 }
 
 export function isConnectedToSupportedNetwork(){
-    if(currentChain === null || currentChain === undefined) return true;
-    return true;
+    return !currentChain;
 }
 
+//attemptWalletConnect() should be successfully called first before this function is called
 export async function getCurrentWalletAddress(){
     if(!signer) return null;
     return await signer.getAddress();    
@@ -72,10 +71,10 @@ export async function attemptWalletConnect(){
 }
 
 function setContractEventHandlers(){
-    contract.on("NewGroupEvent", (addresses, names, ownerIndex) => { handleNewGroupEvent(addresses, names, ownerIndex); });
-    contract.on("DepositEvent", (groupId, amount, sender, senderName, newGroupBalance) => { handleDepositEvent(groupId, amount, sender, senderName, newGroupBalance); });
-    contract.on("WithdrawEvent", (groupId, amount, recipient, recipientName, newGroupBalance) => {handleWithdrawEvent(groupId, amount, recipient, recipientName, newGroupBalance); });
-    contract.on("DissolveEvent", (groupId, owner, ownerName) => { handleDissolveEvent(groupId, owner, ownerName); });
+    contract.on("NewGroup", (addresses, names, ownerIndex) => { handleNewGroupEvent(addresses, names, ownerIndex); });
+    contract.on("Deposit", (groupId, amount, sender, senderName, newGroupBalance) => { handleDepositEvent(groupId, amount, sender, senderName, newGroupBalance); });
+    contract.on("Withdraw", (groupId, amount, recipient, recipientName, newGroupBalance) => {handleWithdrawEvent(groupId, amount, recipient, recipientName, newGroupBalance); });
+    contract.on("Dissolve", (groupId, owner, ownerName) => { handleDissolveEvent(groupId, owner, ownerName); });
 }
 
 /**************************************** WRITE CALLS *************************************************/
