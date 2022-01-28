@@ -5,3 +5,6 @@ coverage
 dist
 
 src/reportWebVitals.js
+public/js/scripts.js
+
+src*

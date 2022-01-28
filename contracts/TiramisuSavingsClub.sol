@@ -24,11 +24,14 @@ contract TiramisuSavingsClub {
     Group[] public groups;
 
     mapping(address => uint) public memberToGroupId;
-    mapping(address => uint) private deposits;
-    mapping(address => uint) private withdrawals;
+    mapping(address => uint) public deposits;
+    mapping(address => uint) public withdrawals;
+    mapping(address => string) public memberNames;
 
-    event Deposit(address depositor, uint groupId, uint amount);
-    event Withdrawal(address payee, uint groupId, uint amount);
+    event NewGroup(address[] addresses, string[] names, uint ownerIndex);
+    event Deposit(uint groupId, uint amount, address sender, string senderName, uint newGroupBalance);
+    event Withdraw(uint groupId, uint amount, address recipient, string recipientName, uint newGroupBalance);
+    event Dissolve(uint groupId, address owner, string ownerName);
 
     constructor() {
         // Group id 0 is immediately burned and disallowed for use
@@ -47,7 +50,7 @@ contract TiramisuSavingsClub {
     /// @dev Reverts if any of the member addresses currently belong to another group (not allowed)
     /// @return group id
     function createGroup(address[] memory _members, string[] memory _names, uint _ownerIndex) public returns (uint) {
-        require(_members.length > 0, "Can't create empty group");
+        require(_members.length > 0, "Cannot create an empty group");
         require(_members.length == _names.length, "_members/_names len should match");
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
@@ -59,10 +62,11 @@ contract TiramisuSavingsClub {
             address _memberAddress = _members[i];
             require(memberToGroupId[_memberAddress] == 0, "Address already in a group");
             memberToGroupId[_memberAddress] = _groupId;
+            memberNames[_memberAddress] = _names[i];
         }
 
         assert(groups.length == _groupIdCounter.current());
-        
+        emit NewGroup(_members, _names, _ownerIndex);
         return _groupId;
     }
 
@@ -76,7 +80,7 @@ contract TiramisuSavingsClub {
         
         _group.balance += msg.value;
         deposits[msg.sender] += msg.value;
-        emit Deposit(msg.sender, _groupId, msg.value);
+        emit Deposit(_groupId, msg.value, msg.sender, memberNames[msg.sender], _group.balance);
     }
 
     /// Withdraw funds from a savings group
@@ -92,18 +96,23 @@ contract TiramisuSavingsClub {
         Group storage _group = groups[_groupId];
         require(_amount <= _group.balance, "Can't withdraw > current balance");
         require(_group.members[_group.nextPayee] == msg.sender, "Caller is not the next payee");
-
-        // solhint-disable-next-line avoid-low-level-calls
-        (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
-        require(_sent, "Failed to send Ether");
-
+        
         _group.balance -= _amount;
         withdrawals[msg.sender] += _amount;
-
         // cycle through addresses, starting back at index 0 when we reach the end of the list
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
 
-        emit Withdrawal(msg.sender, _groupId, _amount);
+        (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
+        if(!_sent) {
+            _group.balance += _amount;
+            withdrawals[msg.sender] -= _amount;
+            _group.nextPayee--;
+            if(_group.nextPayee < 0) _group.nextPayee = (_group.members.length - 1);
+        }
+        require(_sent, "Failed to send Ether");
+
+
+        emit Withdraw(_groupId, _amount, msg.sender, memberNames[msg.sender], _group.balance);
     }
 
     /// Dissolve savings group and return funds
@@ -116,6 +125,7 @@ contract TiramisuSavingsClub {
         uint _groupId = getGroupId();
         Group storage _group = groups[_groupId];
         require(msg.sender == _group.members[_group.ownerIndex], "Caller is not the group owner");
+        string memory _ownerName = memberNames[msg.sender];
 
         // TODO: Need to implement the functionality to disburse the remaining funds fairly
 
@@ -125,9 +135,11 @@ contract TiramisuSavingsClub {
             delete memberToGroupId[_memberAddress];
             delete deposits[_memberAddress];
             delete withdrawals[_memberAddress];
+            delete memberNames[_memberAddress];
         }
 
         delete groups[_groupId];
+        emit Dissolve(_groupId, msg.sender, _ownerName);
     }
 
     /// Get the group at a given id
@@ -146,5 +158,65 @@ contract TiramisuSavingsClub {
         uint _groupId = memberToGroupId[msg.sender];
         require(_groupId > 0, "Caller not member of a group");
         return _groupId;
+    }
+    
+    /// @notice Checks if caller is a member of a group    
+    /// @return boolean value indicating if caller belongs to group
+    function isMemberOfGroup() public view returns (bool){            
+        if(memberToGroupId[msg.sender] == 0) return false;
+        return true;                                       
+    }
+
+    /// @notice Checks if caller is an owner of a group
+    /// @return boolean value indicating if caller owns a group
+    function isGroupOwner() public view returns (bool){
+        uint _groupId = memberToGroupId[msg.sender];
+        if(_groupId == 0) return false;
+
+        Group storage _group = groups[_groupId];
+        uint ownerIndex = _group.ownerIndex;        
+        if(_group.members[ownerIndex] == msg.sender) return true;
+        return false;
+    }
+
+    /// @notice Checks if it's the caller turn for withdrawing funds
+    /// @return boolean value indicating if caller is eligible to withdraw funds
+    function isMyTurn() public view returns (bool) {
+        uint _groupId = memberToGroupId[msg.sender];
+        if(_groupId == 0) return false;
+
+        Group storage _group = groups[_groupId];
+        uint _nextPayee = _group.nextPayee;
+        if(_group.members[_nextPayee] == msg.sender) return true;
+        return false;
+    }
+
+    /// @notice Returns the name of the person in the callers group who is currently eligible to withdraw funds 
+    /// @return string of the name of the person who is currently eligible to withdraw funds
+    function whosTurnIsIt() public view returns (string memory){       
+        uint _groupId = memberToGroupId[msg.sender];
+        if(_groupId == 0) return "";
+
+        Group storage _group = groups[_groupId];
+        return _group.memberNames[_group.nextPayee];
+    }
+
+    /// @notice Returns the total amount of funds available for withdrawl in the callers group
+    /// @return uint of the total amount of funds available for withdrawl in the callers group
+    function getGroupBalance() public view returns (uint){        
+        uint _groupId = memberToGroupId[msg.sender];
+        if(_groupId == 0) return 0;
+
+        Group storage _group = groups[_groupId];
+        return _group.balance;
+    }
+
+    /// @notice Returns the name of the caller if known (is a member of a group)
+    /// @return string of the name of the caller if known (is a member of a group)
+    function getMyName() public view returns (string memory){
+        uint _groupId = memberToGroupId[msg.sender];
+        if(_groupId == 0) return "";
+
+        return memberNames[msg.sender]; 
     }
 }

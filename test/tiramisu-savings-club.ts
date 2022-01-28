@@ -69,7 +69,7 @@ describe("Tiramisu savings club", () => {
         it("should revert when creating an empty group", async function () {
             await expect(
                 contract.connect(accounts[0]).createGroup([], [], 0)
-            ).to.be.revertedWith("Can't create empty group");
+            ).to.be.revertedWith("Cannot create an empty group");
         });
 
         it("should revert when _members and _names length does not match", async function () {
@@ -120,15 +120,15 @@ describe("Tiramisu savings club", () => {
             const depositAmount = 100;
             await expect(contract.connect(accounts[0]).deposit({ value: depositAmount * addresses.length }))
                 .to.emit(contract, "Deposit")
-                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+                .withArgs(1, depositAmount * addresses.length, addresses[0],  addresses[0].toUpperCase(), depositAmount * addresses.length);
             
             let group = await getGroup(1);
             expect(group.members.length).to.equal(addresses.length);
             expect(group.balance).to.equal(depositAmount * addresses.length);
         
             await expect(contract.withdraw(depositAmount * addresses.length))
-                .to.emit(contract, "Withdrawal")
-                .withArgs(addresses[0], 1, depositAmount * addresses.length);
+                .to.emit(contract, "Withdraw")
+                .withArgs(1, depositAmount * addresses.length, addresses[0], addresses[0].toUpperCase(), 0);
             
             group = await getGroup(1);
             expect(group.balance).to.equal(0);
