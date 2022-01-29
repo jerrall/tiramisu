@@ -42,19 +42,9 @@ If you get prompted to install extensions - do it :)
 
 ## Configure environment variables
 
-How to get secrets
-- Etherscan API key:
-  - Sign in to etherscan.io
-  - Go to [etherscan.io/myapikey](https://etherscan.io/myapikey)
-  - Click on API-KEYS
-  - Click Add
-  - Copy API key into .env
-
-
-
 ```bash
 cp ./example.env ./.env
-nano ./env # Update all the values in here with secrets
+nano ./env # Update all the values in here with secrets from Alchemy, Etherscan, and Metamask
 ```
 
 ## Running the project
@@ -72,6 +62,17 @@ npx hardhat help
 ```
 
 Aliases for the above tasks also exist in package.json npm scripts and Visual Studio code tasks (Command + Shift + P ==> Tasks)
+
+## How to deploy
+
+To deploy to Rinkeby, run ```npm run hardhat:deploy:rinkeby```
+
+## How to verify contract source on Etherscan
+
+Add the deployed contract address to the ```hardhat:verify:rinkeby``` script in package.json
+Run ```npm run hardhat:verify:rinkeby``` to verify the source code
+Make sure you added the etherscan API key from Discord to your .env file (which is intentionally gitignore'd)
+Source should then start to appear on Etherscan
 
 ## Code review checklist
 
