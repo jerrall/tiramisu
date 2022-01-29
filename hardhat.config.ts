@@ -1,9 +1,9 @@
-import 'dotenv/config'
+import "dotenv/config";
 
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
-import '@nomiclabs/hardhat-ethers'
+import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
@@ -24,17 +24,17 @@ task("accounts", "Prints the list of accounts", async (_taskArgs, hre) => {
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   paths: {
-    artifacts: './src/artifacts',
+    artifacts: "./src/artifacts",
   },
   networks: {
     hardhat: {
-      chainId: 1337
+      chainId: 1337,
     },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    }
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
@@ -42,7 +42,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
-  }
+  },
 };
 
 export default config;

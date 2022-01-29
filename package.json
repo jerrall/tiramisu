@@ -2,6 +2,9 @@
   "name": "react-dapp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2",
     "@testing-library/jest-dom": "^5.16.1",
@@ -18,8 +21,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . && solhint 'contracts/**/*.sol'",
-    "lint:fix": "eslint . --fix",
+    "lint:ts": "eslint test/**.ts ./*.ts",
+    "lint:sol": "solhint 'contracts/**/*.sol'",
+    "lint": "npm run lint:ts && npm run lint:sol",
+    "lint:fix": "npm run lint:ts -- --fix",
     "hardhat:clean": "hardhat clean",
     "hardhat:compile": "hardhat compile",
     "hardhat:test": "TS_NODE_TRANSPILE_ONLY=1 hardhat test",
