@@ -137,6 +137,13 @@ describe("Tiramisu savings club", () => {
             group = await getGroup(1);
             expect(group.members.length).to.equal(0);
           });
+
+          it("should revert deposit when caller is not part of the group", async function () {
+            await contract.createGroup(addresses.slice(0,2), names.slice(0,2), 0);            
+            await expect(
+                contract.connect(accounts[2]).deposit({ value: 100 })
+            ).to.be.revertedWith("Caller not member of a group");
+        });                    
     });
 
     describe("withdraw", function () {
@@ -188,6 +195,15 @@ describe("Tiramisu savings club", () => {
             const group1 = await getGroup(1);
             expect(group1.nextPayee).to.equal(1);
         });
+
+        it("should revert withdraw when caller is not part of the group", async function () {
+            await contract.createGroup(addresses.slice(0,2), names.slice(0,2), 0);
+            await contract.deposit({ value: 10000 });
+            
+            await expect(
+                contract.connect(accounts[2]).deposit({ value: 100 })
+            ).to.be.revertedWith("Caller not member of a group");
+        });        
     });
 
     describe("dissolve", function () {
