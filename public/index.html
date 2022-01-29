@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -7,7 +8,7 @@
         <meta name="author" content="" />
         <title>Tiramisu Savings Club</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="assets/favicon3.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
         <!-- Google fonts-->
@@ -21,16 +22,18 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="#page-top">Tiramisu Savings Club</a>
+                <img class="logo" style="width: 45px;" src="assets/sweets_tiramisu.png"/>
+                <a class="navbar-brand ms-3" href="#page-top">Tiramisu Savings club</a>
                 <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#yourclub">Your Club</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#about">About</a></li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#developers">Developers</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#yourclub">Your Club</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#developer">Developer</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#note">Note</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,9 +42,10 @@
         <header class="masthead bg-primary text-white text-center">
             <div class="container d-flex align-items-center flex-column">
                 <!-- Masthead Avatar Image-->
-                <img style="width: 600px; max-width: 90%; padding-bottom: 50px;" src="tiramisu-money.png" alt="..." />
+                <img style="width: 600px; max-width: 90%; padding-bottom: 50px;" src="assets/tiramisu-money.png" alt="..." />
                 <!-- Masthead Heading-->
-                <h1 class="masthead-heading text-uppercase mb-0">Tiramisu Savings Club</h1>
+                <h1 class="masthead-heading text-uppercase mb-0">Don't you have a bank account?</h1>
+                <h2 class="mt-3 mb-0">No worry! Here is your savings box.</h2>
                 <!-- Icon Divider-->
                 <div class="divider-custom divider-light">
                     <div class="divider-custom-line"></div>
@@ -49,13 +53,40 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- Masthead Subheading-->
-                <p class="masthead-subheading font-weight-light mb-0">A Savings Club Distributed App (Dapp) That Operates On The Ethereum Blockchain</p>
+                <p class="masthead-subheading font-weight-light mb-0">A Shared Savings Box on The Ethereum Blockchain</p>
             </div>
         </header>
-        <!-- Portfolio Section-->
-        <section class="page-section portfolio beige-bkgd" id="yourclub">
+        <!-- About Section-->
+        <section class="page-section beige-bkgd text-white mb-0" id="about">
             <div class="container">
-                <!-- Portfolio Section Heading-->
+                <!-- About Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-white">What you can do</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- About Section Content-->
+                <div class="row">
+                    <div class="col-lg-4 mt-5 ms-auto"><img class="fig" style="width: 250px;" src="assets/sweetfriends.png"/></div>
+                    <div class="col-lg-4 mt-5 me-auto" style="padding-top: 75px;"><p class="lead">1. You can open a savings box with up to 3 of your friends. Choose one of you as the owner of your box.</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 mt-5 ms-auto" style="padding-top: 70px;"><p class="lead">2. Start deposit your money to your savings box! You can deposit as much money as you like and any time. Withdrawal is allowed for only one member at each point of time. The turn of withdrawal comes in order.</p></div>
+                    <div class="col-lg-4 mt-5 me-auto"><img class="fig" style="width: 270px;" src="assets/deposit.png"/></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 mt-5 ms-auto"><img class="fig" style="width: 280px;" src="assets/cycle.png"/></div>
+                    <div class="col-lg-4 mt-5 me-auto" style="padding-top: 70px;"><p class="lead">3. When your turn comes, you can withdraw money from your savings box! When you want to close the savings box, the owner can close it any time. The pooled savings are divided according to the deposit history, and are returned back to each member immediately.</p></div>
+                </div>
+
+            </div>
+        </section>
+        <!-- Your Club Section-->
+        <section class="page-section portfolio bg-primary" id="yourclub">
+            <div class="container">
+                <!-- Your Club Section Heading-->
                 <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Your Club</h2>
                 <!-- Icon Divider-->
                 <div class="divider-custom">
@@ -69,53 +100,166 @@
                 </div>
             </div>
         </section>
-        <!-- About Section-->
-        <section class="page-section bg-primary text-white mb-0" id="about">
-            <div class="container">
-                <!-- About Section Heading-->
-                <h2 class="page-section-heading text-center text-uppercase text-white">About (TODO)</h2>
-                <!-- Icon Divider-->
-                <div class="divider-custom divider-light">
-                    <div class="divider-custom-line"></div>
-                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                    <div class="divider-custom-line"></div>
-                </div>
-                <!-- About Section Content-->
-                <div class="row">
-                    <div class="col-lg-4 ms-auto"><p class="lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p></div>
-                    <div class="col-lg-4 me-auto"><p class="lead">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p></div>
-                </div>
-               
-            </div>
-        </section>
-        <!-- Contact Section-->
-        <section class="page-section beige-bkgd" id="developers">
+        <!-- Developer Section-->
+        <section class="page-section beige-bkgd" id="developer">
             <div class="container">
                 <!-- Contact Section Heading-->
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Developers (TODO)</h2>
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Developer</h2>
                 <!-- Icon Divider-->
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
                     <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                     <div class="divider-custom-line"></div>
                 </div>
-                <!-- Contact Section Form-->
+                <!-- Developer Section -->
                 <div class="row justify-content-center">
-                    <div text-align="center">
-                    <p>Mayuko Kondo [Picture] [LinkedIn] [Twitter]</p>
-                    <p>Luis Naranjo [Picture] [LinkedIn] [Twitter]</p>
-                    <p>Prashant Nigam [Picture] [LinkedIn] [Twitter]</p>
-                    <p>Jerrall Prakash [Picture] [LinkedIn] [Twitter]</p>
+                    <div class="member">
+                        <img style="width: 300px; max-width: 90%;" src="assets/luis-pfp.png" alt="..."/>
+                    </div>
+                    <div class="member">
+                        <img style="width: 300px; max-width: 90%;" src="assets/jerrall-pfp.png" alt="..."/>
+                    </div>
+                    <div class="member">
+                        <img style="width: 300px; max-width: 90%;" src="assets/prashant-pfp.png" alt="..."/>
+                    </div>
+                    <div class="member">
+                        <img style="width: 300px; max-width: 90%;" src="assets/mayuko-pfp.png" alt="..."/>
+                    </div>
+                    <div class="memberinfo">
+                        <p class="paragraph-text text-secondary row-cols-4" style="padding-left: 1.75rem;">Luis Naranjo</p>
+                        <ul class="list">
+                            <li>
+                                <a href="https://www.linkedin.com/in/luisnaranjo733/" target="_blank">
+                                    <img src="assets/linkedin.png" width="23" height="23" alt="linkdin">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/luisnaranjo733" target="_blank">
+                                    <img src="assets/twitter.png" width="25" height="25" alt="twitter">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/luisnaranjo733" target="_blank">
+                                    <img src="assets/github.png" width="25" height="25" alt="github">
+                                  </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="memberinfo">
+                        <p class="paragraph-text text-secondary row-cols-4" style="padding-left: 1.75rem;">Jerrall Prakash</p>
+                        <ul class="list">
+                            <li>
+                                <a href="https://www.linkedin.com/in/jerrall/" target="_blank">
+                                    <img src="assets/linkedin.png" width="23" height="23" alt="linkdin">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/takeOffWithJerr" target="_blank">
+                                    <img src="assets/twitter.png" width="25" height="25" alt="twitter">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/jerrall" target="_blank">
+                                    <img src="assets/github.png" width="25" height="25" alt="github">
+                                  </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="memberinfo">
+                        <p class="paragraph-text text-secondary row-cols-4" style="padding-left: 1.75rem;">Prashant Nigam</p>
+                        <ul class="list">
+                            <li>
+                                <a href="https://www.linkedin.com/in/prashantnigam10/" target="_blank">
+                                    <img src="assets/linkedin.png" width="23" height="23" alt="linkdin">
+                                  </a>
+                            </li>                            
+                            <li>
+                                <a href="https://twitter.com/prashantnigam_" target="_blank">
+                                    <img src="assets/twitter.png" width="25" height="25" alt="twitter">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/prashantnigam10" target="_blank">
+                                    <img src="assets/github.png" width="25" height="25" alt="github">
+                                  </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="memberinfo">
+                        <p class="paragraph-text text-secondary row-cols-4" style="padding-left: 1.75rem;">Mayuko Kondo</p>
+                        <ul class="list">
+                            <li>
+                                <a href="https://www.linkedin.com/in/mayuko-kondo/" target="_blank">
+                                    <img src="assets/linkedin.png" width="23" height="23" alt="linkdin">
+                                  </a>
+                            </li> 
+                            <li>
+                                <a href="https://twitter.com/konmaru_fox" target="_blank">
+                                    <img src="assets/twitter.png" width="25" height="25" alt="twitter">
+                                  </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/konmaru-fox" target="_blank">
+                                    <img src="assets/github.png" width="25" height="25" alt="github">
+                                  </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
-        
+        <!-- Note Section -->
+        <section class="page-section bg-primary text-white text-center"  id="note">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Section Heading-->
+                <h1 class="page-section-heading text-center text-uppercase text-white">Thank you very much!</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Section paragraph -->
+                <p class="page-section-subheading font-weight-light mb-0">This project was a part of the three week <a href="https://www.dappcamp.xyz/" target="_blank">Dapp camp program</a> (cohort 2). We developed this Tiramisu Dapp under the instruction of <a href="https://twitter.com/iam_preethi" target="_blank">Preethi Kassiredy</a>, <a href="https://mobile.twitter.com/codingnirvana" target="_blank">Rajesh Muppalla</a>, and <a href="https://twitter.com/zishansami102" target="_blank">Zishan Sami</a> during our learning journey. We appreciate their technical support and encouragement.</p>
+                <br><p class="page-section-subheading font-weight-light mb-0">The Tiramisu Savings Club is designed to enable anyone to self-organize a savings club and make community lending possible for friends and family. It is our wish that any of you can be benefited from this Tiramisu service somewhere in the world!</p>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer text-center text-primary">
+            <div class="container">
+                <div class="row">
+                    <!-- Footer Location-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Contract Address</h4>
+                        <p class="lead mb-0">
+                            Ethereum Mainnet
+                            <br />
+                            <a href="https://rinkeby.etherscan.io/address/0x5d8a6A406200510Dae22d52db20252106c84007a" target="_blank">Rinkeby Network</a> 
+                        </p>
+                    </div>
+                    <!-- Footer Social Icons-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Code source</h4>
+                        <a href="https://github.com/jerrall/tiramisu" target="_blank">
+                            <img src="assets/github2.png" width="100" height="100" alt="github2">
+                          </a>
+                    </div>
+                    <!-- Footer About Text-->
+                    <div class="col-lg-4">
+                        <h4 class="text-uppercase mb-4">White Paper</h4>
+                        <p class="lead mb-0">
+                            If you want to know more about our motivation and vision, you can also check
+                            <a href="https://docs.google.com/document/d/1lno_j0djKSbR8xomH6LQdWagApdGJE0dXXxz0KxDTvw/" target="_blank">our white paper</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <!-- Copyright Section-->
-        <div class="copyright py-4 text-center text-white">
-            <div class="container"><small>Copyright &copy; 2022. Website is built using the MIT Licensed Freelancer theme from <a href="https://startbootstrap.com">Start Bootstrap</a>.</small></div>
+        <div class="copyright py-4 text-center text-primary">
+            <div class="container"><small>Copyright &copy; 2022. Website is built using the MIT Licensed Freelancer theme from <a href="https://startbootstrap.com" target="_blank">Start Bootstrap</a>. Images are from <a href="https://www.canstockphoto.com/" target="_blank">CanStockPhoto</a> and <a href="https://www.irasutoya.com/" target="_blank">Irasutoya</a>.</small></div>
         </div>
-       
+
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
