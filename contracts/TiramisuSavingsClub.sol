@@ -55,8 +55,6 @@ contract TiramisuSavingsClub {
         require(_ownerIndex >= 0 && _ownerIndex < _members.length, "_owner index invalid");
 
         uint _groupId = _groupIdCounter.current(); // future id of this group
-        groups.push(Group(_members, _names, _ownerIndex, 0, 0));
-        _groupIdCounter.increment();
 
         for (uint i = 0; i < _members.length; i++) {
             address _memberAddress = _members[i];
@@ -64,7 +62,9 @@ contract TiramisuSavingsClub {
             memberToGroupId[_memberAddress] = _groupId;
             memberNames[_memberAddress] = _names[i];
         }
-
+        
+        groups.push(Group(_members, _names, _ownerIndex, 0, 0)); //add members to the new group, once the previous interation require passes - #gasOptimization
+        _groupIdCounter.increment(); //Counters.sol uses storage variable, so, increment "only" if the current group is successfully created - #gasOptimization
         assert(groups.length == _groupIdCounter.current());
         emit NewGroup(_members, _names, _ownerIndex);
         return _groupId;
@@ -103,13 +103,7 @@ contract TiramisuSavingsClub {
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
 
         (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
-        if(!_sent) {
-            _group.balance += _amount;
-            withdrawals[msg.sender] -= _amount;
-            _group.nextPayee--;
-            if(_group.nextPayee < 0) _group.nextPayee = (_group.members.length - 1);
-        }
-        require(_sent, "Failed to send Ether");
+        require(_sent, "Failed to send Ether"); //failure to send will revert the state changes made in this transactions
 
 
         emit Withdraw(_groupId, _amount, msg.sender, memberNames[msg.sender], _group.balance);
