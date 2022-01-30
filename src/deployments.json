@@ -20,5 +20,12 @@
             "deployer": "Jerrall",
             "gitCommitHash": "d5b65e4cbd9f266da1383ea620e67e49e6f04afc"
         }
+    ],
+    "arbitrum-rinkeby": [
+        {
+            "address": "0x5d8a6A406200510Dae22d52db20252106c84007a",
+            "deployer": "Luis",
+            "gitCommitHash": "d5b65e4cbd9f266da1383ea620e67e49e6f04afc"
+        }
     ]
 }

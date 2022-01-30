@@ -65,10 +65,21 @@ Aliases for the above tasks also exist in package.json npm scripts and Visual St
 
 ## How to deploy
 
-To deploy to Rinkeby, run ```npm run hardhat:deploy:rinkeby```
-
 Please add an entry to src/deployments.json 
 The front end uses the last address in that array
+
+### Rinkeby
+
+To deploy to Rinkeby, run ```npm run hardhat:deploy:rinkeby```
+
+### Arbitrum-Rinkeby
+
+1. Add a connection to the Arbitrum-Rinkeby network in MetaMask: https://developer.offchainlabs.com/docs/public_testnet#connecting-to-the-chain
+2. Make sure you are on the normal L1 Rinkeby network in Metamask
+3. Bridge some ETH to the Arbitrum-Rinkeby L2 (takes ~10 minutes for your deposit to show up in L2)
+https://bridge.arbitrum.io/
+4. Switch to the Arbitrum-Rinkeby L2 network in Metamask to confirm your deposit is complete (you need L2 eth to deploy)
+4. Then run ```npm run hardhat:deploy:arbitrumRinkeby```
 
 ## How to verify contract source on Etherscan
 
