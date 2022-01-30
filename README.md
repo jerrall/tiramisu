@@ -67,6 +67,9 @@ Aliases for the above tasks also exist in package.json npm scripts and Visual St
 
 To deploy to Rinkeby, run ```npm run hardhat:deploy:rinkeby```
 
+Please add an entry to src/deployments.json 
+The front end uses the last address in that array
+
 ## How to verify contract source on Etherscan
 
 Add the deployed contract address to the ```hardhat:verify:rinkeby``` script in package.json
