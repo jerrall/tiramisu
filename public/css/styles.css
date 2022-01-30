@@ -237,7 +237,7 @@ sup {
 }
 
 a {
-  color: #1abc9c;
+  color: inherit;
   text-decoration: underline;
 }
 a:hover {
