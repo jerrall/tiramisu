@@ -1,7 +1,9 @@
 import { ethers } from 'ethers'
 import { showToastMsg } from './toastService';
 import TiramisuSavingsClub from '../artifacts/contracts/TiramisuSavingsClub.sol/TiramisuSavingsClub.json'
-const TiramisuAddress = '0xe9355C642ABa3f17CE4dA98A45E09d1a3110Eca9';
+import Deployments from '../deployments.json';
+
+const TiramisuAddress = Deployments.rinkeby[Deployments.rinkeby.length - 1].address;
 const consoleLoggingEnabled = true;
 
 /**************************************** METAMASK WALLET CALLS *************************************************/
@@ -27,9 +29,22 @@ export function isConnectedToSupportedNetwork(){
 }
 
 //attemptWalletConnect() should be successfully called first before this function is called
+
+/**
+ * Get human readable wallet address
+ * - WARNING: attemptWalletConnect() should be successfully called first before this function is called
+ * - WARNING: This does not guarantee an Ethereum address. This might return an ENS name
+ * @returns {string} ENS name from reverse lookup OR Ethereum address
+ */
 export async function getCurrentWalletAddress(){
     if(!signer) return null;
-    return await signer.getAddress();    
+    
+    const address = await signer.getAddress();
+    let ensName = null;
+    if (provider) {
+        ensName = await provider.lookupAddress(address);
+    }
+    return ensName === null ? address : ensName;
 }
 
 if(window.ethereum){
