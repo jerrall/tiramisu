@@ -44,9 +44,7 @@ export async function getCurrentWalletAddress(){
     if (provider) {
         ensName = await provider.lookupAddress(address);
     }
-    const result = ensName === null ? address : ensName;
-    debugger;
-    return result;
+    return ensName === null ? address : ensName;
 }
 
 if(window.ethereum){
