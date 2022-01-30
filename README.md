@@ -42,19 +42,9 @@ If you get prompted to install extensions - do it :)
 
 ## Configure environment variables
 
-How to get secrets
-- Etherscan API key:
-  - Sign in to etherscan.io
-  - Go to [etherscan.io/myapikey](https://etherscan.io/myapikey)
-  - Click on API-KEYS
-  - Click Add
-  - Copy API key into .env
-
-
-
 ```bash
 cp ./example.env ./.env
-nano ./env # Update all the values in here with secrets
+nano ./env # Update all the values in here with secrets from Alchemy, Etherscan, and Metamask
 ```
 
 ## Running the project
@@ -72,6 +62,31 @@ npx hardhat help
 ```
 
 Aliases for the above tasks also exist in package.json npm scripts and Visual Studio code tasks (Command + Shift + P ==> Tasks)
+
+## How to deploy
+
+Please add an entry to src/deployments.json 
+The front end uses the last address in that array
+
+### Rinkeby
+
+To deploy to Rinkeby, run ```npm run hardhat:deploy:rinkeby```
+
+### Arbitrum-Rinkeby
+
+1. Add a connection to the Arbitrum-Rinkeby network in MetaMask: https://developer.offchainlabs.com/docs/public_testnet#connecting-to-the-chain
+2. Make sure you are on the normal L1 Rinkeby network in Metamask
+3. Bridge some ETH to the Arbitrum-Rinkeby L2 (takes ~10 minutes for your deposit to show up in L2)
+https://bridge.arbitrum.io/
+4. Switch to the Arbitrum-Rinkeby L2 network in Metamask to confirm your deposit is complete (you need L2 eth to deploy)
+4. Then run ```npm run hardhat:deploy:arbitrumRinkeby```
+
+## How to verify contract source on Etherscan (doesn't work for Arbitrum)
+
+Add the deployed contract address to the ```hardhat:verify:rinkeby``` script in package.json
+Run ```npm run hardhat:verify:rinkeby``` to verify the source code
+Make sure you added the etherscan API key from Discord to your .env file (which is intentionally gitignore'd)
+Source should then start to appear on Etherscan
 
 ## Code review checklist
 
