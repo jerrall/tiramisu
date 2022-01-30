@@ -81,7 +81,7 @@ https://bridge.arbitrum.io/
 4. Switch to the Arbitrum-Rinkeby L2 network in Metamask to confirm your deposit is complete (you need L2 eth to deploy)
 4. Then run ```npm run hardhat:deploy:arbitrumRinkeby```
 
-## How to verify contract source on Etherscan
+## How to verify contract source on Etherscan (doesn't work for Arbitrum)
 
 Add the deployed contract address to the ```hardhat:verify:rinkeby``` script in package.json
 Run ```npm run hardhat:verify:rinkeby``` to verify the source code
