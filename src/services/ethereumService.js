@@ -1,9 +1,7 @@
 import { ethers } from 'ethers'
 import { showToastMsg } from './toastService';
 import TiramisuSavingsClub from '../artifacts/contracts/TiramisuSavingsClub.sol/TiramisuSavingsClub.json'
-import Deployments from '../deployments.json';
-
-const TiramisuAddress = Deployments.rinkeby[Deployments.rinkeby.length - 1].address;
+const TiramisuAddress = '0xe9355C642ABa3f17CE4dA98A45E09d1a3110Eca9';
 const consoleLoggingEnabled = true;
 
 /**************************************** METAMASK WALLET CALLS *************************************************/

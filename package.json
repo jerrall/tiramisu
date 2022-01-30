@@ -2,9 +2,6 @@
   "name": "react-dapp",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=16"
-  },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2",
     "@testing-library/jest-dom": "^5.16.1",
@@ -21,10 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint:ts": "eslint test/**.ts ./*.ts",
-    "lint:sol": "solhint 'contracts/**/*.sol'",
-    "lint": "npm run lint:ts && npm run lint:sol",
-    "lint:fix": "npm run lint:ts -- --fix",
+    "lint": "eslint . && solhint 'contracts/**/*.sol'",
+    "lint:fix": "eslint . --fix",
     "hardhat:clean": "hardhat clean",
     "hardhat:compile": "hardhat compile",
     "hardhat:test": "TS_NODE_TRANSPILE_ONLY=1 hardhat test",
@@ -33,7 +28,6 @@
     "hardhat:help": "hardhat help",
     "hardhat:deploy:local": "TS_NODE_TRANSPILE_ONLY=1 TS_NODE_FILES=true hardhat run scripts/deploy.ts --network localhost",
     "hardhat:deploy:rinkeby": "TS_NODE_TRANSPILE_ONLY=1 TS_NODE_FILES=true hardhat run scripts/deploy.ts --network rinkeby",
-    "hardhat:deploy:arbitrumRinkeby": "TS_NODE_TRANSPILE_ONLY=1 TS_NODE_FILES=true hardhat run scripts/deploy.ts --network arbitrumRinkeby",
     "hardhat:verify:rinkeby": "hardhat verify --network rinkeby <contract address goes here>",
     "check": "npm run hardhat:clean && npm run hardhat:compile && tsc && npm run hardhat:test && npm run lint"
   },
