@@ -29,9 +29,24 @@ export function isConnectedToSupportedNetwork(){
 }
 
 //attemptWalletConnect() should be successfully called first before this function is called
+
+/**
+ * Get human readable wallet address
+ * - WARNING: attemptWalletConnect() should be successfully called first before this function is called
+ * - WARNING: This does not guarantee an Ethereum address. This might return an ENS name
+ * @returns {string} ENS name from reverse lookup OR Ethereum address
+ */
 export async function getCurrentWalletAddress(){
     if(!signer) return null;
-    return await signer.getAddress();    
+    
+    const address = await signer.getAddress();
+    let ensName = null;
+    if (provider) {
+        ensName = await provider.lookupAddress(address);
+    }
+    const result = ensName === null ? address : ensName;
+    debugger;
+    return result;
 }
 
 if(window.ethereum){
