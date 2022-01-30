@@ -102,7 +102,6 @@ contract TiramisuSavingsClub {
         // cycle through addresses, starting back at index 0 when we reach the end of the list
         _group.nextPayee = (_group.nextPayee + 1) % _group.members.length;
 
-        // solhint-disable-next-line avoid-low-level-calls
         (bool _sent, ) = payable(msg.sender).call{value: _amount}("");
         require(_sent, "Failed to send Ether"); //failure to send will revert the state changes made in this transactions
 
